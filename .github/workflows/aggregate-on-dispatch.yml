@@ -68,6 +68,15 @@ MARKDOWN
 
           echo "fname=$fname" >> "$GITHUB_OUTPUT"
 
+      - name: Debug payload and workspace
+        run: |
+          set -euo pipefail
+          echo "Event path: $GITHUB_EVENT_PATH"
+          echo "Workspace contents:"
+          ls -la
+          echo "Releases dir:"
+          ls -la releases || true
+
       - name: Regenerate index
         run: |
           set -euo pipefail
