@@ -46,7 +46,18 @@ jobs:
           fname="releases/${deploy_time}_${safe_component}_${short_sha}.md"
 
           mkdir -p releases
-          python - <<'PY'
+          
+          # Export variables for Python
+          export component
+          export sha
+          export title
+          export summary
+          export pr
+          export deploy_time
+          export environment
+          export fname
+          
+          python3 - <<'PY'
 import os
 
 component = os.environ["component"]
@@ -80,6 +91,8 @@ _More details or escalation info here as appropriate._
 
 with open(fname, "w", encoding="utf-8") as f:
     f.write(content)
+    
+print(f"Created release file: {fname}")
 PY
 
           echo "fname=$fname" >> "$GITHUB_OUTPUT"
