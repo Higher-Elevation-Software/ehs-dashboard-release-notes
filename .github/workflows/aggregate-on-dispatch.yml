@@ -45,7 +45,7 @@ jobs:
           fname="releases/${deploy_time}_${safe_component}_${short_sha}.md"
 
           mkdir -p releases
-          
+
           # Export variables for Python
           export component
           export sha
@@ -55,44 +55,48 @@ jobs:
           export deploy_time
           export environment
           export fname
-          
+
           python3 - <<'PY'
-import os
+          import os
+          from textwrap import dedent
 
-component = os.environ["component"]
-sha = os.environ["sha"]
-title = os.environ["title"]
-summary = os.environ["summary"]
-pr = os.environ["pr"]
-deploy_time = os.environ["deploy_time"]
-environment = os.environ["environment"]
-fname = os.environ["fname"]
+          component = os.environ["component"]
+          sha = os.environ["sha"]
+          title = os.environ["title"]
+          summary = os.environ["summary"]
+          pr = os.environ["pr"]
+          deploy_time = os.environ["deploy_time"]
+          environment = os.environ["environment"]
+          fname = os.environ["fname"]
 
-content = f"""---
-component: {component}
-sha: {sha}
-deploy_time: {deploy_time}
-pr: {pr}
-environment: {environment}
----
+          content = dedent(
+              f"""\
+              ---
+              component: {component}
+              sha: {sha}
+              deploy_time: {deploy_time}
+              pr: {pr}
+              environment: {environment}
+              ---
 
-# {title}
+              # {title}
 
-**Component:** {component}  
-**SHA:** `{sha}`  
-**Deployed:** {deploy_time} (UTC)  
-**Environment:** {environment}
+              **Component:** {component}  
+              **SHA:** `{sha}`  
+              **Deployed:** {deploy_time} (UTC)  
+              **Environment:** {environment}
 
-{summary}
+              {summary}
 
-_More details or escalation info here as appropriate._
-"""
+              _More details or escalation info here as appropriate._
+              """
+          )
 
-with open(fname, "w", encoding="utf-8") as f:
-    f.write(content)
-    
-print(f"Created release file: {fname}")
-PY
+          with open(fname, "w", encoding="utf-8") as f:
+              f.write(content)
+              
+          print(f"Created release file: {fname}")
+          PY
 
           echo "fname=$fname" >> "$GITHUB_OUTPUT"
 
@@ -116,7 +120,8 @@ PY
           echo "" >> index.md
           for f in $(ls -1 releases/*.md 2>/dev/null | sort -r); do
             basename=$(basename "$f")
-            title_line=$(sed -n '1,5p' "$f" | sed -n '1p')
+            title_line=$(grep -m1 "^# " "$f" | sed 's/^# //')
+            [ -z "$title_line" ] && title_line=$(sed -n '1p' "$f")
             echo "- [$basename]($f) — $title_line" >> index.md
           done || true
 
