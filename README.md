@@ -21,7 +21,7 @@ Creates releases/*.md file
     ↓
 Regenerates index.md
     ↓
-Commits & Pushes to main
+Commits & pushes to the target branch (defaults to the repo's default branch)
     ↓
 GitHub Pages Publishes
 ```
@@ -29,6 +29,8 @@ GitHub Pages Publishes
 ## Service Integration
 
 Services integrate by sending a `repository_dispatch` event after successful production deployment.
+
+The aggregator honors `client_payload.target_branch` to decide where to commit the generated release note. If omitted, it uses the repository's default branch.
 
 ### Required Payload Fields
 
@@ -42,6 +44,7 @@ Services integrate by sending a `repository_dispatch` event after successful pro
 - **pr** (string): Pull request number
 - **deploy_time** (string): UTC timestamp in format `YYYYMMDDTHHMMSSZ` (defaults to current time)
 - **environment** (string): Deployment environment (defaults to `production`)
+- **target_branch** (string): Branch to receive the commit/push. Defaults to the repo's default branch; set to `staging` (or another Pages-enabled branch) for safe testing.
 
 ### Example: Cloud Build Integration
 
@@ -70,10 +73,11 @@ Add this step at the end of your `cloudbuild.yaml`:
           \"client_payload\": {
             \"component\": \"your-service-name\",
             \"sha\": \"$COMMIT_SHA\",
-            \"title\": \"$(echo "$TITLE" | jq -Rs .)\",
-            \"summary\": \"$(echo "$SUMMARY" | jq -Rs .)\",
+            \"title\": \"$(echo \"$TITLE\" | jq -Rs .)\",
+            \"summary\": \"$(echo \"$SUMMARY\" | jq -Rs .)\",
             \"pr\": \"$PR\",
-            \"environment\": \"production\"
+            \"environment\": \"production\",
+            \"target_branch\": \"staging\"  # omit or change for prod
           }
         }"
 
@@ -114,7 +118,8 @@ jobs:
                 "component": "your-service-name",
                 "sha": "${{ github.sha }}",
                 "title": "${{ github.event.head_commit.message }}",
-                "environment": "production"
+                "environment": "production",
+                "target_branch": "staging"  # omit or change for prod
               }
             }'
 ```
@@ -125,6 +130,8 @@ Use the provided test script to manually trigger a release note:
 
 ```bash
 ./test-dispatch.sh my-component abc123 "My Test Release"
+# Optionally specify summary, pr, environment, target_branch:
+# ./test-dispatch.sh my-component abc123 "My Test Release" "Summary here" "" staging staging
 ```
 
 Or manually with `curl`:
@@ -143,6 +150,8 @@ curl -X POST \
     }
   }'
 ```
+
+For staging-only testing, add `"target_branch": "staging"` inside `client_payload`.
 
 ## Secrets & Permissions
 

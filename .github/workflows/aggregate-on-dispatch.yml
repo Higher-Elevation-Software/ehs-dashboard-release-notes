@@ -6,6 +6,7 @@ on:
 
 env:
   TARGET_BRANCH: ${{ github.event.repository.default_branch }}
+  TARGET_BRANCH_OVERRIDE: ${{ github.event.client_payload.target_branch }}
 
 permissions:
   contents: write
@@ -29,6 +30,7 @@ jobs:
           pr=$(jq -r '.client_payload.pr // ""' "$event")
           deploy_time=$(jq -r '.client_payload.deploy_time // ""' "$event")
           environment=$(jq -r '.client_payload.environment // ""' "$event")
+          target_branch=$(jq -r '.client_payload.target_branch // ""' "$event")
 
           if [ -z "$component" ] || [ -z "$sha" ] || [ -z "$title" ]; then
             echo "Missing required fields: component, sha, and title are required" >&2
@@ -39,6 +41,8 @@ jobs:
           [ -z "$summary" ] && summary="$title"
           [ -z "$deploy_time" ] && deploy_time=$(date -u +%Y%m%dT%H%M%SZ)
           [ -z "$environment" ] && environment="production"
+          [ -z "$target_branch" ] && target_branch="${TARGET_BRANCH_OVERRIDE:-}"
+          [ -z "$target_branch" ] && target_branch="$TARGET_BRANCH"
 
           short_sha=${sha:0:7}
           safe_component=$(echo "$component" | tr '[:upper:]' '[:lower:]' | tr -c '[:alnum:]-' '-')
@@ -54,6 +58,7 @@ jobs:
           export pr
           export deploy_time
           export environment
+          export target_branch
           export fname
 
           python3 - <<'PY'
@@ -99,15 +104,18 @@ jobs:
           PY
 
           echo "fname=$fname" >> "$GITHUB_OUTPUT"
+          echo "target_branch=$target_branch" >> "$GITHUB_OUTPUT"
 
       - name: Debug payload and workspace
         run: |
           set -euo pipefail
+          target_branch="${{ steps.parse.outputs.target_branch }}"
           echo "Event path: $GITHUB_EVENT_PATH"
           echo "Workspace contents:"
           ls -la
           echo "Releases dir:"
           ls -la releases || true
+          echo "Target branch: $target_branch"
 
       - name: Regenerate index
         run: |
@@ -132,4 +140,4 @@ jobs:
           git config user.email "ci@higherelevationsoftware.com"
           git add -A
           git commit -m "Add release note: ${{ steps.parse.outputs.fname }}" || exit 0
-          git push origin HEAD:${TARGET_BRANCH}
+          git push origin HEAD:${{ steps.parse.outputs.target_branch }}

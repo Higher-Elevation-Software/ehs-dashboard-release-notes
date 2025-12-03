@@ -1,6 +1,6 @@
 #!/bin/bash
 # Test script for triggering release note repository dispatch events
-# Usage: ./test-dispatch.sh [component] [sha] [title]
+# Usage: ./test-dispatch.sh [component] [sha] [title] [summary] [pr] [environment] [target_branch]
 
 set -euo pipefail
 
@@ -10,6 +10,7 @@ TITLE="${3:-Test Release Note}"
 SUMMARY="${4:-This is a test release note triggered manually}"
 PR="${5:-}"
 ENVIRONMENT="${6:-production}"
+TARGET_BRANCH="${7:-}"
 
 # Get current UTC timestamp
 DEPLOY_TIME=$(date -u +%Y%m%dT%H%M%SZ)
@@ -20,6 +21,7 @@ echo "  SHA: $SHA"
 echo "  Title: $TITLE"
 echo "  Deploy time: $DEPLOY_TIME"
 echo "  Environment: $ENVIRONMENT"
+echo "  Target branch: ${TARGET_BRANCH:-<default>}"
 echo
 
 # Send the dispatch
@@ -36,7 +38,8 @@ curl -X POST \
       \"summary\": \"$SUMMARY\",
       \"pr\": \"$PR\",
       \"deploy_time\": \"$DEPLOY_TIME\",
-      \"environment\": \"$ENVIRONMENT\"
+      \"environment\": \"$ENVIRONMENT\",
+      \"target_branch\": \"$TARGET_BRANCH\"
     }
   }"
 
