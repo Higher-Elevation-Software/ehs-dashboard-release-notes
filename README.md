@@ -1,228 +1,92 @@
-# EHS Dashboard Release Notes
+# EHS Dashboard — Release Notes
 
-Automated public changelog aggregator for the EHS Dashboard ecosystem.
+This repository powers the **public changelog** for the EHS Dashboard
+suite of services.
 
-**Live Site**: https://higher-elevation-software.github.io/ehs-dashboard-release-notes/
+**Live changelog:**  
+https://higher-elevation-software.github.io/ehs-dashboard-release-notes/
 
-## Overview
+Whenever we deploy a new version of one of our production services, an
+automated process creates a release note in this repository and updates
+the public site.
 
-This repository serves as a central aggregator for release notes from all EHS Dashboard services. When services deploy to production, they automatically trigger a `repository_dispatch` event that creates a new release note entry and regenerates the public changelog.
+---
 
-## Architecture
+## What this site covers
 
-```
-Service Deploy (Cloud Build/GitHub Actions)
-    ↓
-Repository Dispatch Event
-    ↓
-Aggregator Workflow (.github/workflows/aggregate-on-dispatch.yml)
-    ↓
-Creates releases/*.md file
-    ↓
-Regenerates index.md
-    ↓
-Commits & pushes to the target branch (defaults to the repo's default branch)
-    ↓
-GitHub Pages Publishes
-```
+The changelog currently includes production releases for:
 
-## Service Integration
+- `dashboard-api` – core backend API
+- `dashboard-webapp` – main web application
+- `dashboard-ui` – dashboard user interface
 
-Services integrate by sending a `repository_dispatch` event after successful production deployment.
+Only **production** deployments are recorded here. Staging and internal
+previews are not included.
 
-The aggregator honors `client_payload.target_branch` to decide where to commit the generated release note. If omitted, it uses the repository's default branch.
+Each release note contains:
 
-### Required Payload Fields
+- **Component** – which part of the system changed
+- **SHA** – the commit identifier for the deployed code
+- **Deployed** – UTC timestamp of the deployment
+- **Environment** – currently always `production` for public entries
+- **Summary** – a short description of the change
 
-- **component** (string, required): Service identifier (e.g., `dashboard-api`, `dashboard-webapp`, `dashboard-ui`)
-- **sha** (string, required): Git commit SHA of the deployed code
-- **title** (string, required): Human-readable title for the release note
+You can browse individual release files under the
+[`releases/`](./releases) directory, or use the
+[main changelog page](https://higher-elevation-software.github.io/ehs-dashboard-release-notes/)
+for a chronological view.
 
-### Optional Payload Fields
+---
 
-- **summary** (string): Detailed description (defaults to title)
-- **pr** (string): Pull request number
-- **deploy_time** (string): UTC timestamp in format `YYYYMMDDTHHMMSSZ` (defaults to current time)
-- **environment** (string): Deployment environment (defaults to `production`)
-- **target_branch** (string): Branch to receive the commit/push. Defaults to the repo's default branch; set to `staging` (or another Pages-enabled branch) for safe testing.
+## How to read a release entry
 
-### Example: Cloud Build Integration
+On the changelog site you will see entries like:
 
-Add this step at the end of your `cloudbuild.yaml`:
+> `20251204T185423Z_dashboard-webapp-_4481952.md — Send staging release notes to main branch; only environment varies`
 
-```yaml
-- name: gcr.io/cloud-builders/curl
-  id: notify-changelog
-  env:
-    - COMMIT_SHA=${COMMIT_SHA}
-  secretEnv: ['AGGREGATOR_TOKEN']
-  entrypoint: bash
-  args:
-    - -c
-    - |
-      TITLE=$(git log -1 --pretty=%s "$COMMIT_SHA" || echo "Production deployment")
-      SUMMARY=$(git log -1 --pretty=%b "$COMMIT_SHA" || echo "$TITLE")
-      PR=$(echo "$SUMMARY" | grep -oP '(?<=#)\d+' | head -1 || echo "")
-      
-      curl -X POST \
-        -H "Accept: application/vnd.github.v3+json" \
-        -H "Authorization: token $$AGGREGATOR_TOKEN" \
-        https://api.github.com/repos/Higher-Elevation-Software/ehs-dashboard-release-notes/dispatches \
-        -d "{
-          \"event_type\": \"release-note\",
-          \"client_payload\": {
-            \"component\": \"your-service-name\",
-            \"sha\": \"$COMMIT_SHA\",
-            \"title\": \"$(echo \"$TITLE\" | jq -Rs .)\",
-            \"summary\": \"$(echo \"$SUMMARY\" | jq -Rs .)\",
-            \"pr\": \"$PR\",
-            \"environment\": \"production\",
-            \"target_branch\": \"staging\"  # omit or change for prod
-          }
-        }"
+Clicking a link opens the full release note. Each note shows:
 
-availableSecrets:
-  secretManager:
-    - versionName: projects/YOUR_PROJECT/secrets/AGGREGATOR_TOKEN/versions/latest
-      env: AGGREGATOR_TOKEN
-```
+- A **title** describing the change
+- The affected **component**
+- The deployed **commit SHA**
+- The **deployment time** in UTC
+- The **environment** (production)
+- A short **summary** providing additional context
 
-### Example: GitHub Actions Integration (Vercel)
+If you need more information about a particular change (for example,
+which ticket, feature, or pull request it corresponds to), please
+contact your EHS representative or open an issue in the relevant service
+repository.
 
-Add this workflow to `.github/workflows/` in your repo:
+---
 
-```yaml
-name: Release Note on Deploy
-on:
-  push:
-    branches: [main]
+## Update frequency
 
-jobs:
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Wait for Vercel deployment
-        # Add Vercel deployment waiting logic here
-        
-      - name: Dispatch release note
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.AGGREGATOR_TOKEN }}" \
-            https://api.github.com/repos/Higher-Elevation-Software/ehs-dashboard-release-notes/dispatches \
-            -d '{
-              "event_type": "release-note",
-              "client_payload": {
-                "component": "your-service-name",
-                "sha": "${{ github.sha }}",
-                "title": "${{ github.event.head_commit.message }}",
-                "environment": "production",
-                "target_branch": "staging"  # omit or change for prod
-              }
-            }'
-```
+The changelog is updated automatically when a production deployment of
+any of the services above completes successfully. The site is typically
+refreshed within a minute of a deployment finishing.
 
-## Testing
+There is no manual curation step between deployment and publication;
+entries are generated directly from the deployment pipelines.
 
-Use the provided test script to manually trigger a release note:
+---
 
-```bash
-./test-dispatch.sh my-component abc123 "My Test Release"
-# Optionally specify summary, pr, environment, target_branch:
-# ./test-dispatch.sh my-component abc123 "My Test Release" "Summary here" "" staging staging
-```
+## Feedback & support
 
-Or manually with `curl`:
+If you notice something incorrect in the release notes, or need more
+information about a change:
 
-```bash
-curl -X POST \
-  -H "Accept: application/vnd.github.v3+json" \
-  -H "Authorization: token $(gh auth token)" \
-  https://api.github.com/repos/Higher-Elevation-Software/ehs-dashboard-release-notes/dispatches \
-  -d '{
-    "event_type": "release-note",
-    "client_payload": {
-      "component": "test-component",
-      "sha": "abc123",
-      "title": "Test Release"
-    }
-  }'
-```
+- Open an issue in this repository, **or**
+- Contact your EHS account representative.
 
-For staging-only testing, add `"target_branch": "staging"` inside `client_payload`.
+---
 
-## Secrets & Permissions
+## For developers
 
-### AGGREGATOR_TOKEN
+This repository is maintained by the EHS engineering team.
 
-A GitHub Personal Access Token (fine-grained) with:
-- **Repository access**: Only `Higher-Elevation-Software/ehs-dashboard-release-notes`
-- **Permissions**: Contents (Read and Write)
+If you are integrating a new internal service with the changelog system,
+see:
 
-This token must be:
-1. Stored in GCP Secret Manager as `AGGREGATOR_TOKEN` for Cloud Build services
-2. Stored as a GitHub Repository Secret in each service repo that uses GitHub Actions
-
-### Rotating the Token
-
-1. Generate a new fine-grained PAT in GitHub with the same permissions
-2. Update the secret in GCP Secret Manager:
-   ```bash
-   echo -n "NEW_TOKEN" | gcloud secrets versions add AGGREGATOR_TOKEN --data-file=-
-   ```
-3. Update GitHub Repository Secrets for each service using GitHub Actions
-
-## File Structure
-
-- `.github/workflows/aggregate-on-dispatch.yml` - Main aggregator workflow
-- `releases/` - Individual release note files (auto-generated)
-- `index.md` - Main changelog page (auto-generated)
-- `.nojekyll` - Disables Jekyll processing for GitHub Pages
-- `test-dispatch.sh` - Manual testing script
-
-## Workflow Details
-
-The aggregator workflow:
-1. **Validates** incoming payload (component, sha, title required)
-2. **Creates** a release note file: `releases/YYYYMMDDTHHMMSSZ_component_sha.md`
-3. **Regenerates** `index.md` with links to all release notes
-4. **Commits** and pushes changes to main branch
-5. **Triggers** GitHub Pages rebuild
-
-## Troubleshooting
-
-### Dispatch not triggering workflow
-
-- Verify `AGGREGATOR_TOKEN` has correct permissions
-- Check if GitHub Actions are enabled for the repository
-- Confirm the payload includes required fields (component, sha, title)
-- Look for rate limiting (5000 API requests per hour per token)
-
-### Release note not appearing on site
-
-- Check workflow runs: https://github.com/Higher-Elevation-Software/ehs-dashboard-release-notes/actions
-- Verify the workflow completed successfully
-- Check Pages deployment status
-- Clear browser cache if recently deployed
-
-### Workflow failing
-
-- Review workflow run logs in GitHub Actions
-- Verify the Python script has all required environment variables
-- Check git commit/push permissions
-
-## Monitoring
-
-- **Workflow Runs**: https://github.com/Higher-Elevation-Software/ehs-dashboard-release-notes/actions/workflows/aggregate-on-dispatch.yml
-- **Live Site**: https://higher-elevation-software.github.io/ehs-dashboard-release-notes/
-- **GitHub Pages**: Settings → Pages in this repository
-
-## Future Enhancements
-
-- [ ] Add status-page integration (currently undecided)
-- [ ] Email notifications on deployment
-- [ ] Slack webhook integration
-- [ ] Deployment metrics dashboard
-- [ ] Rollback detection and alerting
+- [`docs/INTERNALS.md`](./docs/INTERNALS.md) – internal integration
+details (payload format, examples, and secret management).
