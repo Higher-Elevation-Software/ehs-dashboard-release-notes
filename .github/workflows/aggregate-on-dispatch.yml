@@ -26,11 +26,11 @@ jobs:
       - name: Validate, Parse, and Enhance with Gemini
         id: parse
         env:
-          GH_TOKEN: ${{ secrets.AGGREGATOR_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_READER_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -euo pipefail
-          export GH_TOKEN="${{ secrets.AGGREGATOR_TOKEN }}"
+          export GH_TOKEN="${{ secrets.REPO_READER_TOKEN }}"
           
           # Install dependencies
           pip install google-generativeai requests
