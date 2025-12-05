@@ -18,10 +18,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate and parse payload
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Validate, Parse, and Enhance with Gemini
         id: parse
+        env:
+          GH_TOKEN: ${{ secrets.AGGREGATOR_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -euo pipefail
+          
+          # Install dependencies
+          pip install google-generativeai requests
+
           event="$GITHUB_EVENT_PATH"
           component=$(jq -r '.client_payload.component // ""' "$event")
           sha=$(jq -r '.client_payload.sha // ""' "$event")
@@ -44,6 +56,32 @@ jobs:
           [ -z "$target_branch" ] && target_branch="${TARGET_BRANCH_OVERRIDE:-}"
           [ -z "$target_branch" ] && target_branch="$TARGET_BRANCH"
 
+          # Fetch PR Context
+          repo_name="Higher-Elevation-Software/$component"
+          pr_title=""
+          pr_body=""
+
+          echo "Attempting to fetch PR details for $repo_name..."
+          if [ -n "$pr" ] && [ "$pr" != "null" ]; then
+             json=$(gh pr view "$pr" -R "$repo_name" --json title,body 2>/dev/null || echo "")
+             if [ -n "$json" ]; then
+                pr_title=$(echo "$json" | jq -r .title)
+                pr_body=$(echo "$json" | jq -r .body)
+                echo "Found PR #$pr details."
+             fi
+          elif [ -n "$sha" ]; then
+             # Try to find PR by SHA
+             json=$(gh pr list -R "$repo_name" --search "$sha" --state merged --json number,title,body --limit 1 2>/dev/null | jq '.[0] // empty' || echo "")
+              if [ -n "$json" ]; then
+                pr_title=$(echo "$json" | jq -r .title)
+                pr_body=$(echo "$json" | jq -r .body)
+                pr=$(echo "$json" | jq -r .number)
+                echo "Found PR #$pr via SHA."
+             else
+                echo "No PR found for SHA $sha."
+             fi
+          fi
+
           short_sha=${sha:0:7}
           safe_component=$(echo "$component" | tr '[:upper:]' '[:lower:]' | tr -c '[:alnum:]-' '-')
           fname="releases/${deploy_time}_${safe_component}_${short_sha}.md"
@@ -60,9 +98,12 @@ jobs:
           export environment
           export target_branch
           export fname
+          export pr_title
+          export pr_body
 
           python3 - <<'PY'
           import os
+          import google.generativeai as genai
           from textwrap import dedent
 
           component = os.environ["component"]
@@ -73,6 +114,44 @@ jobs:
           deploy_time = os.environ["deploy_time"]
           environment = os.environ["environment"]
           fname = os.environ["fname"]
+          
+          pr_title = os.environ.get("pr_title", "")
+          pr_body = os.environ.get("pr_body", "")
+          gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+
+          final_summary = summary
+          
+          # AI Enhancement Logic
+          if gemini_api_key and (pr_title or pr_body):
+              try:
+                  genai.configure(api_key=gemini_api_key)
+                  model = genai.GenerativeModel('gemini-pro')
+                  
+                  prompt = f"""
+                  You are writing release notes for a public changelog. 
+                  The audience is end-users, so be concise, user-friendly, and avoid purely technical jargon if possible.
+                  
+                  Inputs:
+                  - Component: {component}
+                  - Commit Message: {title}
+                  - Commit Details: {summary}
+                  - PR Title: {pr_title}
+                  - PR Description: {pr_body}
+                  
+                  Instructions:
+                  1. Look for a section named "Release Notes" in the PR Description. If it exists, prioritize that content.
+                  2. Summarize the changes in 1-3 sentences.
+                  3. Use active voice.
+                  4. Output ONLY the summary text. Do not include markdown headers like "## Summary".
+                  """
+                  
+                  response = model.generate_content(prompt)
+                  if response.text:
+                      final_summary = response.text.strip()
+                      print("Gemini generated content successfully.")
+              except Exception as e:
+                  print(f"Gemini generation failed: {e}")
+                  # Fallback to original summary is already set
 
           content = dedent(
               f"""\
@@ -91,7 +170,7 @@ jobs:
               **Deployed:** {deploy_time} (UTC)  
               **Environment:** {environment}
 
-              {summary}
+              {final_summary}
 
               _More details or escalation info here as appropriate._
               """
