@@ -137,8 +137,13 @@ jobs:
           gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
 
           final_summary = summary
+          final_title = title
           category = "Update"
           user_facing = "true"
+          
+          # Format date for display (YYYY-MM-DD)
+          display_date = deploy_time[:8]
+          display_date = f"{display_date[:4]}-{display_date[4:6]}-{display_date[6:]}"
           
           # AI Enhancement Logic
           if gemini_api_key and (pr_title or pr_body):
@@ -159,10 +164,12 @@ jobs:
                   
                   Instructions:
                   1. Look for a section named "Release Notes" in the PR Description. If it exists, prioritize that content.
-                  2. Summarize the changes in 1-3 sentences. Use active voice.
-                  3. Determine the Category: "Feature", "Fix", "Improvement", "Security", or "Internal".
-                  4. Determine if User Facing: "true" or "false".
-                  5. Output format:
+                  2. Generate a concise, user-friendly Title (5-8 words).
+                  3. Summarize the changes in 1-3 sentences. Use active voice.
+                  4. Determine the Category: "Feature", "Fix", "Improvement", "Security", or "Internal".
+                  5. Determine if User Facing: "true" or "false".
+                  6. Output format:
+                  Title: <New Title>
                   Category: <Category>
                   User Facing: <true/false>
                   Summary: <Summary Text>
@@ -173,13 +180,15 @@ jobs:
                       # Simple parsing of the response
                       lines = response.text.strip().split('\n')
                       for line in lines:
-                          if line.startswith("Category:"):
+                          if line.startswith("Title:"):
+                              final_title = line.replace("Title:", "").strip()
+                          elif line.startswith("Category:"):
                               category = line.replace("Category:", "").strip()
                           elif line.startswith("User Facing:"):
                               user_facing = line.replace("User Facing:", "").strip().lower()
                           elif line.startswith("Summary:"):
                               final_summary = line.replace("Summary:", "").strip()
-                          elif not line.startswith("Category:") and not line.startswith("User Facing:") and not line.startswith("Summary:"):
+                          elif not line.startswith("Category:") and not line.startswith("User Facing:") and not line.startswith("Summary:") and not line.startswith("Title:"):
                               # Append continuation lines to summary if they exist
                               if final_summary == summary:
                                   final_summary = line.strip()
@@ -203,11 +212,10 @@ jobs:
               user_facing: {user_facing}
               ---
 
-              # {title}
+              # {final_title}
 
               **Component:** {component}  
-              **SHA:** `{sha}`  
-              **Deployed:** {deploy_time} (UTC)  
+              **Date:** {display_date}  
               **Environment:** {environment}
 
               {final_summary}
@@ -278,8 +286,7 @@ jobs:
             
             # Filter Logic: If user_facing is strictly "false", maybe skip? 
             # For now, let's just label it "Internal" or show all for transparency.
-            # Un-comment next line to hide internal:
-            # if [[ "$user_facing" == "false" ]]; then continue; fi
+            if [[ "$user_facing" == "false" ]]; then continue; fi
 
             echo "- **$formatted_date** — $icon **$category**: [$title_line]($f)" >> index.md
           done || true
