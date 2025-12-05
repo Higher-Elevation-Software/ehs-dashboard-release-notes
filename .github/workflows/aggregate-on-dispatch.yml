@@ -205,9 +205,14 @@ jobs:
                   - **Forbidden Words:** You must not use any of the following or their synonyms: fix, bug, error, incorrect, wrong, inaccurate, accuracy, correction, failure, ensure correctness, issue, faulty, broken, miscalculated, problem.
                   - **Preferred Framing:** Use positive, forward-looking verbs such as: Enhanced, Refined, Streamlined, Optimized, Updated, Standardized, Clarified, Expanded. Example framing: “Refined logic to better account for…”
 
-                  Specificity Requirement
-                  Be specific about what changed.
-                  Avoid generic statements like “various improvements.”
+                  5. Abstraction & Specificity Rules
+                  - **No Code References:** Do NOT mention specific variable names (e.g., `constsum`, `chem_record`), function names, classes, file paths, or database columns.
+                  - **Conceptual Description:** Describe the *business logic* or *data concept* rather than the implementation.
+                    - *Bad:* "prioritizing the high value from constsum"
+                    - *Good:* "prioritizing the upper bound value for chemical composition"
+                    - *Bad:* "removed redundant multiplication by constituent_percentage"
+                    - *Good:* "streamlined the weight calculation logic to eliminate redundant processing"
+                  - **Be Specific but Functional:** You must explain *what logic changed* without revealing *how it was coded*. Focus on the *behavioral outcome* (e.g., "improves consistency in emissions reporting").
                   """
                   
                   response = model.generate_content(prompt)
