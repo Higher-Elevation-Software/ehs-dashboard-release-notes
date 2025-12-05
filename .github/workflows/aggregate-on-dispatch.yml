@@ -30,6 +30,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -euo pipefail
+          export GH_TOKEN="${{ secrets.AGGREGATOR_TOKEN }}"
           
           # Install dependencies
           pip install google-generativeai requests
