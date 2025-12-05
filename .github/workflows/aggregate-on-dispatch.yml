@@ -63,22 +63,28 @@ jobs:
 
           echo "Attempting to fetch PR details for $repo_name..."
           if [ -n "$pr" ] && [ "$pr" != "null" ]; then
-             json=$(gh pr view "$pr" -R "$repo_name" --json title,body 2>/dev/null || echo "")
-             if [ -n "$json" ]; then
+             echo "Fetching PR #$pr..."
+             json=$(gh pr view "$pr" -R "$repo_name" --json title,body 2>&1 || echo "ERROR")
+             if [[ "$json" != "ERROR" ]]; then
                 pr_title=$(echo "$json" | jq -r .title)
                 pr_body=$(echo "$json" | jq -r .body)
                 echo "Found PR #$pr details."
+             else
+                echo "Failed to fetch PR #$pr via gh CLI."
+                echo "Error details: $json"
              fi
           elif [ -n "$sha" ]; then
+             echo "Searching for PR associated with SHA $sha..."
              # Try to find PR by SHA
-             json=$(gh pr list -R "$repo_name" --search "$sha" --state merged --json number,title,body --limit 1 2>/dev/null | jq '.[0] // empty' || echo "")
-              if [ -n "$json" ]; then
+             json=$(gh pr list -R "$repo_name" --search "$sha" --state merged --json number,title,body --limit 1 2>&1 | jq '.[0] // empty' || echo "ERROR")
+              if [[ "$json" != "ERROR" ]] && [ -n "$json" ]; then
                 pr_title=$(echo "$json" | jq -r .title)
                 pr_body=$(echo "$json" | jq -r .body)
                 pr=$(echo "$json" | jq -r .number)
                 echo "Found PR #$pr via SHA."
              else
-                echo "No PR found for SHA $sha."
+                echo "No PR found for SHA $sha or error occurred."
+                if [[ "$json" == "ERROR" ]]; then echo "Error details: $(gh pr list -R "$repo_name" --search "$sha" --state merged --json number,title,body --limit 1 2>&1)"; fi
              fi
           fi
 
