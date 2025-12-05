@@ -152,8 +152,9 @@ jobs:
                   model = genai.GenerativeModel('gemini-2.5-flash-lite')
                   
                   prompt = f"""
-                  You are writing release notes for a public changelog. 
-                  The audience is end-users, so be concise, user-friendly, and avoid purely technical jargon if possible.
+                  You are an expert Product Marketing Manager for a high-trust Enterprise EHS/Compliance software platform.
+                  Your audience is compliance officers and legal teams who rely on this platform for regulatory reporting. 
+                  **Crucial:** They trust the system implicitly. Any suggestion that past data was "wrong" or "inaccurate" causes panic.
                   
                   Inputs:
                   - Component: {component}
@@ -163,16 +164,20 @@ jobs:
                   - PR Description: {pr_body}
                   
                   Instructions:
-                  1. Look for a section named "Release Notes" in the PR Description. If it exists, prioritize that content.
-                  2. Generate a concise, user-friendly Title (5-8 words). Focus on the *benefit*.
-                  3. Summarize the changes in 1-2 sentences.
-                  4. **TONE & BRAND GUIDELINES (CRITICAL):**
-                     - Tone: Professional, Reassuring, Authoritative.
-                     - **Do NOT** imply that the previous version was "broken", "wrong", or "inaccurate" unless explicitly stated as a critical security incident.
-                     - **Avoid negative words:** "fix", "error", "bug", "incorrect", "issue", "problem", "failure".
-                     - **Use positive framing:** Instead of "Fixed calculation error", say "Refined calculation logic for greater consistency." instead of "Fixed crash", say "Improved application stability."
-                     - Focus on the *value* provided (e.g., "Improved consistency," "Enhanced handling of X," "Streamlined Y").
-                  5. Determine the Category: "Feature", "Fix", "Improvement", "Security", or "Internal".
+                  1. **Primary Source:** Use the PR Description ({pr_body}) as the main source of truth. It contains the developer's summary.
+                  2. Generate a concise, value-driven Title (5-8 words). Focus on the *capability added* or *workflow improved*.
+                  3. Summarize the changes in 1-2 professional sentences.
+                  4. **TONE & BRAND GUIDELINES (STRICT):**
+                     - **Voice:** Professional, Reassuring, Authoritative, Forward-looking.
+                     - **The "Zero-Panic" Rule:** Never imply that the previous version was "broken", "wrong", "inaccurate", or "calculating incorrectly". Assume past behavior was "standard for that time" and this is an "enhancement".
+                     - **Forbidden Words/Phrases:** "fix", "bug", "error", "incorrect", "wrong", "accurate" (implies it wasn't before), "correction", "ensure correctness", "failure", "issue".
+                     - **Preferred Phrasing:** 
+                       - Instead of "Fixed calculation error", use "Refined calculation logic to account for [specific edge case]."
+                       - Instead of "Ensures more accurate results", use "Enhanced precision in [specific scenario] modeling."
+                       - Instead of "Fixed crash", use "Optimized system stability under high load."
+                       - Use verbs like: "Enhanced", "Refined", "Streamlined", "Optimized", "Updated", "Standardized", "Clarified".
+                     - **Specificity:** Be specific about *what* changed in the logic (e.g., "prioritizing high-value indicators") rather than generic "improvements".
+                  5. Determine the Category: "Feature", "Improvement", "Security", or "Internal" (Use "Improvement" instead of "Fix" whenever possible).
                   6. Determine if User Facing: "true" or "false".
                   7. Output format:
                   Title: <New Title>
