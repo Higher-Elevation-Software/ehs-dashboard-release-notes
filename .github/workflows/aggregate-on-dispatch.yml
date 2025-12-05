@@ -152,38 +152,62 @@ jobs:
                   model = genai.GenerativeModel('gemini-2.5-flash-lite')
                   
                   prompt = f"""
-                  You are an expert Product Marketing Manager for a high-trust Enterprise EHS/Compliance software platform.
-                  Your audience is compliance officers and legal teams who rely on this platform for regulatory reporting. 
-                  **Crucial:** They trust the system implicitly. Any suggestion that past data was "wrong" or "inaccurate" causes panic.
-                  
+                  You are an expert Product Marketing Manager for a high-trust Enterprise EHS (Environment, Health, and Safety)/Compliance software platform.
+                  Your audience is compliance officers and legal teams who rely on this platform for regulatory reporting.
+
+                  They trust the system implicitly.
+
+                  CORE PRINCIPLES
+                  - **Preserve Trust Above All:** Under no circumstances may you imply that any previous system behavior was wrong, inaccurate, broken, faulty, or unreliable. Frame all changes as enhancements or forward-looking improvements.
+                  - **Authoritative Tone:** Your voice is professional, reassuring, and authoritative.
+
+                  TASK
+                  Transform the provided technical inputs into a customer-facing release note.
+
                   Inputs:
                   - Component: {component}
                   - Commit Message: {title}
                   - Commit Details: {summary}
                   - PR Title: {pr_title}
                   - PR Description: {pr_body}
-                  
-                  Instructions:
-                  1. **Primary Source:** Use the PR Description ({pr_body}) as the main source of truth. It contains the developer's summary.
-                  2. Generate a concise, value-driven Title (5-8 words). Focus on the *capability added* or *workflow improved*.
-                  3. Summarize the changes in 1-2 professional sentences.
-                  4. **TONE & BRAND GUIDELINES (STRICT):**
-                     - **Voice:** Professional, Reassuring, Authoritative, Forward-looking.
-                     - **The "Zero-Panic" Rule:** Never imply that the previous version was "broken", "wrong", "inaccurate", or "calculating incorrectly". Assume past behavior was "standard for that time" and this is an "enhancement".
-                     - **Forbidden Words/Phrases:** "fix", "bug", "error", "incorrect", "wrong", "accurate" (implies it wasn't before), "correction", "ensure correctness", "failure", "issue".
-                     - **Preferred Phrasing:** 
-                       - Instead of "Fixed calculation error", use "Refined calculation logic to account for [specific edge case]."
-                       - Instead of "Ensures more accurate results", use "Enhanced precision in [specific scenario] modeling."
-                       - Instead of "Fixed crash", use "Optimized system stability under high load."
-                       - Use verbs like: "Enhanced", "Refined", "Streamlined", "Optimized", "Updated", "Standardized", "Clarified".
-                     - **Specificity:** Be specific about *what* changed in the logic (e.g., "prioritizing high-value indicators") rather than generic "improvements".
-                  5. Determine the Category: "Feature", "Improvement", "Security", or "Internal" (Use "Improvement" instead of "Fix" whenever possible).
-                  6. Determine if User Facing: "true" or "false".
-                  7. Output format:
+
+                  OUTPUT FORMAT (STRICT — NO EXTRA TEXT)
                   Title: <New Title>
-                  Category: <Category>
-                  User Facing: <true/false>
+                  Category: <Feature | Improvement | Security | Internal>
+                  User Facing: <true | false>
                   Summary: <Summary Text>
+
+                  DETAILED RULES
+                  1. Title Rules
+                  The title must be 5–8 words long.
+                  Must highlight the new capability or improved workflow.
+
+                  2. Category Rules
+                  Select exactly one:
+                  Feature → PR introduces a new capability, a new option, a new workflow, or a meaningful expansion of functionality.
+                  Improvement → PR enhances an existing capability, optimizes logic, expands precision, or clarifies workflow behavior.
+                  Security → PR concerns hardening, authentication, permissions, or data protection.
+                  Internal → Backend-only changes not visible to users.
+                  Do not use categories implying repair (e.g., “Fix”).
+
+                  3. User Facing Rules
+                  Return true if the change:
+                  modifies workflows users directly interact with
+                  updates a report, visible field, or UI element
+                  adds a new user option or visible behavior
+                  Return false for backend logic changes not visible to users.
+
+                  4. Summary & Tone Rules (STRICT)
+                  - **Length & Tone:**
+                    - For **Standard/Minor Updates**: Write 1–2 professional, authoritative, and reassuring sentences.
+                    - For **Major Features/Complex Updates**: You may expand up to 8 sentences to fully explain the new capability, workflow, or value unlocked.
+                  - **Framing Past Behavior:** Reference previous behavior only with neutral terms like “earlier logic,” “previous approach,” or “standard behavior at that time.”
+                  - **Forbidden Words:** You must not use any of the following or their synonyms: fix, bug, error, incorrect, wrong, inaccurate, accuracy, correction, failure, ensure correctness, issue, faulty, broken, miscalculated, problem.
+                  - **Preferred Framing:** Use positive, forward-looking verbs such as: Enhanced, Refined, Streamlined, Optimized, Updated, Standardized, Clarified, Expanded. Example framing: “Refined logic to better account for…”
+
+                  Specificity Requirement
+                  Be specific about what changed.
+                  Avoid generic statements like “various improvements.”
                   """
                   
                   response = model.generate_content(prompt)
