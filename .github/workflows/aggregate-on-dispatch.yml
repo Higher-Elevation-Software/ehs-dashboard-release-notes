@@ -164,11 +164,17 @@ jobs:
                   
                   Instructions:
                   1. Look for a section named "Release Notes" in the PR Description. If it exists, prioritize that content.
-                  2. Generate a concise, user-friendly Title (5-8 words).
-                  3. Summarize the changes in 1-3 sentences. Use active voice.
-                  4. Determine the Category: "Feature", "Fix", "Improvement", "Security", or "Internal".
-                  5. Determine if User Facing: "true" or "false".
-                  6. Output format:
+                  2. Generate a concise, user-friendly Title (5-8 words). Focus on the *benefit*.
+                  3. Summarize the changes in 1-2 sentences.
+                  4. **TONE & BRAND GUIDELINES (CRITICAL):**
+                     - Tone: Professional, Reassuring, Authoritative.
+                     - **Do NOT** imply that the previous version was "broken", "wrong", or "inaccurate" unless explicitly stated as a critical security incident.
+                     - **Avoid negative words:** "fix", "error", "bug", "incorrect", "issue", "problem", "failure".
+                     - **Use positive framing:** Instead of "Fixed calculation error", say "Refined calculation logic for greater consistency." instead of "Fixed crash", say "Improved application stability."
+                     - Focus on the *value* provided (e.g., "Improved consistency," "Enhanced handling of X," "Streamlined Y").
+                  5. Determine the Category: "Feature", "Fix", "Improvement", "Security", or "Internal".
+                  6. Determine if User Facing: "true" or "false".
+                  7. Output format:
                   Title: <New Title>
                   Category: <Category>
                   User Facing: <true/false>
