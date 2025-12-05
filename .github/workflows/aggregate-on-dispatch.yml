@@ -64,14 +64,24 @@ jobs:
           echo "Attempting to fetch PR details for $repo_name..."
           if [ -n "$pr" ] && [ "$pr" != "null" ]; then
              echo "Fetching PR #$pr..."
+             # Fetch PR JSON or return ERROR on failure
              json=$(gh pr view "$pr" -R "$repo_name" --json title,body 2>&1 || echo "ERROR")
-             if [[ "$json" != "ERROR" ]]; then
-                pr_title=$(echo "$json" | jq -r .title)
-                pr_body=$(echo "$json" | jq -r .body)
-                echo "Found PR #$pr details."
-             else
+             
+             # Check if gh command succeeded
+             if [[ "$json" == "ERROR" ]] || [[ "$json" == *"graphql error"* ]] || [[ "$json" == *"Could not resolve to a PullRequest"* ]]; then
                 echo "Failed to fetch PR #$pr via gh CLI."
-                echo "Error details: $json"
+                echo "Error output: $json"
+             else
+                # Parse JSON safely
+                pr_title=$(echo "$json" | jq -r .title 2>/dev/null || echo "")
+                pr_body=$(echo "$json" | jq -r .body 2>/dev/null || echo "")
+                
+                if [ -n "$pr_title" ]; then
+                    echo "Found PR #$pr details."
+                else
+                    echo "Failed to parse JSON for PR #$pr."
+                    echo "Raw output: $json"
+                fi
              fi
           elif [ -n "$sha" ]; then
              echo "Searching for PR associated with SHA $sha..."
