@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EHS Dashboard – Release Notes</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Babel for JSX (keeps us buildless) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+  <div id="root"></div>
+
+  <script type="text/babel" data-type="module">
+    import React, { useEffect, useMemo, useRef, useState } from 'https://esm.sh/react@18.2.0';
+    import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
+    import {
+      Search,
+      GitCommit,
+      Calendar,
+      Server,
+      CheckCircle2,
+      AlertCircle,
+      Zap,
+      Box,
+      ChevronDown,
+      LayoutGrid,
+      ExternalLink,
+      Clock,
+      Filter
+    } from 'https://esm.sh/lucide-react@0.292.0';
+
+    const CATEGORY_META = {
+      Improvement: { classes: 'bg-teal-50 text-teal-700 border-teal-200 ring-teal-500/10', icon: <Zap className="w-3 h-3" /> },
+      Feature: { classes: 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-emerald-500/10', icon: <Zap className="w-3 h-3" /> },
+      Security: { classes: 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-500/10', icon: <AlertCircle className="w-3 h-3" /> },
+      Internal: { classes: 'bg-slate-50 text-slate-700 border-slate-200 ring-slate-500/10', icon: <CheckCircle2 className="w-3 h-3" /> },
+      Update: { classes: 'bg-indigo-50 text-indigo-700 border-indigo-200 ring-indigo-500/10', icon: <CheckCircle2 className="w-3 h-3" /> },
+    };
+    const ALLOWED_CATEGORIES = ['Feature', 'Improvement', 'Security', 'Internal'];
+
+    const Badge = ({ type }) => {
+      const meta = CATEGORY_META[type] || CATEGORY_META.Update;
+      return (
+        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider border ring-1 ring-inset ${meta.classes}`}>
+          {meta.icon}
+          {type || 'Update'}
+        </span>
+      );
+    };
+
+    const Header = () => (
+      // same as below but with linear-gradient(135deg, rgb(3, 31, 61) 0%, rgb(0, 107, 123) 100%)
+      <div className="relative bg-gradient-to-br from-[#031f3d] to-[#006b7b] pb-32 pt-8 px-4 sm:px-6 lg:px-8 shadow-inner overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-white opacity-[0.03] pointer-events-none" style={{ background: 'radial-gradient(circle at top right, white, transparent 70%)' }}></div>
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+            <div className="flex items-center space-x-3 text-white">
+
+              {
+                //TODO: replace withthe EHS-Dashboard_logo_one_line.svg
+              }
+              <img src="./EHS-Dashboard_logo_one_line.svg" alt="EHS-Dashboard Logo" className="h-6 w-auto" />
+            </div>
+            <div className="flex items-center space-x-6">
+              <a className="text-slate-300 hover:text-white text-sm font-medium transition-colors hidden sm:block" href="./README.md">Documentation</a>
+              <a className="text-slate-300 hover:text-white text-sm font-medium transition-colors hidden sm:block" href="mailto:support@higherelevationsoftware.com">Support</a>
+            </div>
+          </div>
+
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700/50 text-teal-400 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-md shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
+              Product Updates
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-normal text-white mb-4 tracking-tight leading-tight font-['Roboto']" style={{ lineHeight: '1.75rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
+              Changelog & Release Notes
+            </h1>
+            <p className="text-lg text-slate-300 font-light leading-relaxed">
+              Stay up to date with the latest improvements, fixes, and features delivered to the EHS Dashboard.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+
+    const FilterBar = ({ search, setSearch, category, setCategory, selectedComponents, setSelectedComponents, components, categories }) => {
+      const [componentMenuOpen, setComponentMenuOpen] = useState(false);
+      const triggerRef = useRef(null);
+      const menuRef = useRef(null);
+
+      const allSelected = selectedComponents.length === 0 || selectedComponents.length === components.length;
+
+      const toggleComponent = (comp) => {
+        if (comp === 'All Components') {
+          setSelectedComponents([]);
+          return;
+        }
+        setSelectedComponents((prev) => {
+          const next = new Set(prev);
+          if (next.has(comp)) {
+            next.delete(comp);
+          } else {
+            next.add(comp);
+          }
+          // If everything is selected, collapse to "all"
+          if (next.size >= components.length) {
+            return [];
+          }
+          return Array.from(next);
+        });
+      };
+
+      useEffect(() => {
+        const handleClickAway = (e) => {
+          if (!componentMenuOpen) return;
+          const trigger = triggerRef.current;
+          const menu = menuRef.current;
+          if (trigger && trigger.contains(e.target)) return;
+          if (menu && menu.contains(e.target)) return;
+          setComponentMenuOpen(false);
+        };
+        window.addEventListener('mousedown', handleClickAway);
+        return () => window.removeEventListener('mousedown', handleClickAway);
+      }, [componentMenuOpen]);
+
+      return (
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between p-4 bg-white border-b border-slate-200 rounded-t-xl sticky top-0 z-20">
+          <div className="relative w-full md:w-96 group">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-slate-400 group-focus-within:text-teal-500 transition-colors" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search releases..."
+              className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 focus:bg-white sm:text-sm transition-all shadow-sm"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-3 w-full md:w-auto pb-2 md:pb-0" style={{ overflowY: 'visible' }}>
+            <div className="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-200">
+              {['All', ...categories].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${category === cat
+                    ? 'bg-white text-slate-800 shadow-sm ring-1 ring-slate-200'
+                    : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
+                    }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <div className="h-8 w-px bg-slate-200 mx-2 hidden md:block"></div>
+
+            <div className="relative" style={{ overflow: 'visible', zIndex: 100 }}>
+              <button
+                onClick={() => setComponentMenuOpen((o) => !o)}
+                className="flex items-center justify-between min-w-[180px] px-3 py-2 rounded-lg text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all shadow-sm"
+                ref={triggerRef}
+              >
+                <div className="flex items-center gap-2">
+                  <Box className="w-4 h-4 text-slate-400" />
+                  <span className="truncate max-w-[130px]">
+                    {allSelected
+                      ? 'All Components'
+                      : selectedComponents.length === 1
+                        ? selectedComponents[0]
+                        : `${selectedComponents.length} selected`}
+                  </span>
+                </div>
+                <ChevronDown className={`w-3 h-3 ml-2 text-slate-400 transition-transform ${componentMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {componentMenuOpen && (
+                <div
+                  className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-slate-100 py-1"
+                  ref={menuRef}
+                  style={{ zIndex: 100 }}
+                  data-component-menu
+                >
+                  {['All Components', ...components].map((comp) => {
+                    const isAll = comp === 'All Components';
+                    const isSelected = isAll ? allSelected : (!allSelected && selectedComponents.includes(comp));
+                    return (
+                      <button
+                        key={comp}
+                        onClick={() => toggleComponent(comp)}
+                        className="w-full text-left px-4 py-2.5 text-sm text-slate-600 hover:bg-teal-50 hover:text-teal-700 transition-colors flex items-center justify-between"
+                      >
+                        {comp}
+                        {isSelected && <CheckCircle2 className="w-3 h-3 text-teal-600" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const ReleaseCard = ({ item }) => {
+      const [isExpanded, setIsExpanded] = useState(false);
+      const dateLabel = useMemo(() => {
+        if (!item.deploy_time) return '';
+        const yyyy = item.deploy_time.slice(0, 4);
+        const mm = item.deploy_time.slice(4, 6);
+        const dd = item.deploy_time.slice(6, 8);
+        return new Date(`${yyyy}-${mm}-${dd}`).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+      }, [item.deploy_time]);
+
+      return (
+        <div className={`group bg-white border border-slate-200 rounded-xl transition-all duration-300 ease-in-out ${isExpanded ? 'shadow-lg ring-1 ring-slate-200' : 'shadow-sm hover:shadow-md hover:border-teal-200'}`}>
+          <div onClick={() => setIsExpanded(!isExpanded)} className="flex flex-col p-5 cursor-pointer select-none">
+            <div className="flex items-start gap-4">
+              <div className={`mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0 transition-colors ${isExpanded ? 'bg-teal-500' : 'bg-slate-300 group-hover:bg-teal-400'}`}></div>
+
+              <div className="flex-grow min-w-0">
+                <div className="flex flex-wrap items-center gap-y-2 gap-x-3 mb-2">
+                  <h3 className={`text-base font-bold transition-colors duration-200 ${isExpanded ? 'text-teal-700' : 'text-slate-900 group-hover:text-teal-700'}`}>
+                    {item.title}
+                  </h3>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Calendar className="w-3 h-3 text-slate-300" />
+                    <span className="text-xs font-mono text-slate-400 tabular-nums">{dateLabel}</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge type={item.display_category || item.category} />
+                  <span className="text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm inline-flex items-center gap-1">
+                    <Server className="w-3.5 h-3.5 text-slate-400" /> {item.component}
+                  </span>
+                  <span className="text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm inline-flex items-center gap-1 uppercase tracking-wide">
+                    <span className="relative flex h-2 w-2">
+                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${item.environment === 'production' ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
+                      <span className={`relative inline-flex rounded-full h-2 w-2 ${item.environment === 'production' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                    </span>
+                    {item.environment || 'env'}
+                  </span>
+                  {!isExpanded && (
+                    <span className="text-sm text-slate-500 truncate hidden sm:inline-block max-w-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      Click to view details...
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className={`p-1 rounded-full transition-all duration-300 ${isExpanded ? 'bg-slate-100 text-slate-600 rotate-180' : 'text-slate-300 group-hover:text-teal-500 group-hover:bg-teal-50'}`}>
+                <ChevronDown className="w-5 h-5" />
+              </div>
+            </div>
+          </div>
+
+          <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className="px-5 pb-5">
+              <div className="bg-slate-50/80 rounded-lg border border-slate-100 p-4 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-slate-200"></div>
+
+                <div className="pl-3">
+                  <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <Clock className="w-3 h-3" />
+                    Summary of Changes
+                  </h4>
+                  <p className="text-slate-600 leading-relaxed text-sm sm:text-base mb-6">
+                    {item.summary || 'No summary provided.'}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200/60">
+                    {item.sha && (
+                      <div className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1.5 rounded-md shadow-sm">
+                        <GitCommit className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="font-mono text-slate-600">{item.short_sha}</span>
+                      </div>
+                    )}
+                    <a
+                      href={item.path}
+                      className="flex items-center gap-2 text-xs font-semibold text-teal-700 bg-white border border-teal-100 px-2.5 py-1.5 rounded-md shadow-sm hover:bg-teal-50"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" /> View full note
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const App = () => {
+      const [releases, setReleases] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState('');
+      const [search, setSearch] = useState('');
+      const [category, setCategory] = useState('All');
+      const [selectedComponents, setSelectedComponents] = useState([]);
+      const [page, setPage] = useState(1);
+      const PAGE_SIZE = 20;
+
+      useEffect(() => {
+        let isMounted = true;
+        fetch('data/releases.json', { cache: 'no-store' })
+          .then((res) => {
+            if (!res.ok) throw new Error('Failed to load releases');
+            return res.json();
+          })
+          .then((json) => {
+            if (!isMounted) return;
+            setReleases(json.items || []);
+            setLoading(false);
+          })
+          .catch((err) => {
+            if (!isMounted) return;
+            setError(err.message || 'Unable to load releases');
+            setLoading(false);
+          });
+        return () => { isMounted = false; };
+      }, []);
+
+      useEffect(() => {
+        // Reset to first page when filters or search change
+        setPage(1);
+      }, [search, category, selectedComponents]);
+
+      const components = useMemo(() => {
+        const unique = Array.from(new Set(releases.map((r) => r.component).filter(Boolean)));
+        return unique.sort();
+      }, [releases]);
+
+      const categories = ALLOWED_CATEGORIES;
+
+      const filtered = useMemo(() => {
+        const query = search.toLowerCase();
+        return releases.filter((item) => {
+          const matchesSearch = !query || (item.title?.toLowerCase().includes(query));
+
+          const matchesCategory = category === 'All' || item.display_category === category;
+          const matchesComponent = selectedComponents.length === 0 || selectedComponents.includes(item.component);
+
+          return matchesSearch && matchesCategory && matchesComponent;
+        });
+      }, [releases, search, category, selectedComponents]);
+
+      const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      const currentPage = Math.min(page, pageCount);
+      const startIdx = (currentPage - 1) * PAGE_SIZE;
+      const paginated = filtered.slice(startIdx, startIdx + PAGE_SIZE);
+      const showingFrom = filtered.length === 0 ? 0 : startIdx + 1;
+      const showingTo = Math.min(filtered.length, startIdx + PAGE_SIZE);
+
+      useEffect(() => {
+        if (page > pageCount) {
+          setPage(pageCount);
+        }
+      }, [page, pageCount]);
+
+      return (
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-teal-100 selection:text-teal-900">
+          <Header />
+
+          <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-20 pb-20">
+            <div className="bg-white rounded-xl shadow-2xl border border-slate-200/60 ring-1 ring-slate-900/5 overflow-visible">
+              <FilterBar
+                search={search}
+                setSearch={setSearch}
+                category={category}
+                setCategory={setCategory}
+                selectedComponents={selectedComponents}
+                setSelectedComponents={setSelectedComponents}
+                components={components}
+                categories={categories}
+              />
+
+              <div className="bg-slate-50/50 p-4 sm:p-6 min-h-[400px]">
+                {loading && (
+                  <div className="flex items-center gap-3 text-slate-500 text-sm">
+                    <Filter className="w-4 h-4 animate-spin text-teal-500" />
+                    Loading releases...
+                  </div>
+                )}
+
+                {error && (
+                  <div className="text-rose-600 text-sm font-medium bg-rose-50 border border-rose-100 rounded-lg p-3">
+                    {error}
+                  </div>
+                )}
+
+                {!loading && !error && (
+                  <div className="flex flex-col space-y-4">
+                    {paginated.length > 0 ? (
+                      paginated.map((item) => (
+                        <ReleaseCard key={item.id} item={item} />
+                      ))
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-24 text-slate-400 animate-in fade-in zoom-in-95 duration-300">
+                        <div className="bg-white p-6 rounded-full mb-4 shadow-sm border border-slate-100">
+                          <Search className="w-10 h-10 text-slate-300" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-slate-700 mb-1">No releases found</h3>
+                        <p className="text-sm text-slate-500">Try a different search or reset filters.</p>
+                        <button
+                          onClick={() => { setCategory('All'); setSelectedComponents([]); setSearch(''); }}
+                          className="mt-6 text-sm font-medium text-teal-600 hover:text-teal-700 underline underline-offset-4"
+                        >
+                          Clear all filters
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-white px-6 py-4 border-t border-slate-200 flex items-center justify-between text-sm text-slate-500">
+                <span className="tabular-nums">
+                  Showing <strong>{showingFrom}</strong>–<strong>{showingTo}</strong> of <strong>{filtered.length}</strong>
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    className="px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium uppercase tracking-wide"
+                    disabled={currentPage <= 1}
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+                    className="px-4 py-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium uppercase tracking-wide"
+                    disabled={currentPage >= pageCount}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <p className="text-slate-400 text-sm mb-2">&copy; 2025 Higher Elevation Software. All rights reserved.</p>
+            <div className="flex justify-center gap-4 text-xs text-slate-300">
+              <a href="#" className="hover:text-slate-400 transition-colors">Privacy Policy</a>
+              <span>•</span>
+              <a href="#" className="hover:text-slate-400 transition-colors">Terms of Service</a>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    const root = createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+
+</html>
