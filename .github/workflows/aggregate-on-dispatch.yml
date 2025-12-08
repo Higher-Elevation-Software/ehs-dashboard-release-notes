@@ -33,7 +33,7 @@ jobs:
           export GH_TOKEN="${{ secrets.REPO_READER_TOKEN }}"
           
           # Install dependencies
-          pip install google-generativeai requests
+          pip install google-generativeai requests pyyaml
 
           event="$GITHUB_EVENT_PATH"
           component=$(jq -r '.client_payload.component // ""' "$event")
@@ -120,8 +120,11 @@ jobs:
 
           python3 - <<'PY'
           import os
+          import re
+          import yaml
           import google.generativeai as genai
           from textwrap import dedent
+          from datetime import datetime
 
           component = os.environ["component"]
           sha = os.environ["sha"]
@@ -130,95 +133,131 @@ jobs:
           pr = os.environ["pr"]
           deploy_time = os.environ["deploy_time"]
           environment = os.environ["environment"]
-          fname = os.environ["fname"]
           
           pr_title = os.environ.get("pr_title", "")
           pr_body = os.environ.get("pr_body", "")
           gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
 
+          # 1. Extract Issue ID (HES-XXX)
+          issue_id = ""
+          hes_match = re.search(r"(hes-\d+)", title + " " + pr_title + " " + pr_body, re.IGNORECASE)
+          if hes_match:
+              issue_id = hes_match.group(1).upper()
+
+          # 2. Determine File Path & Mode
+          # If we have an Issue ID, we look for a Feature File. Otherwise, generic timestamp file.
+          is_feature_mode = bool(issue_id)
+          
+          if is_feature_mode:
+              fname = f"releases/FEATURE_{issue_id}.md"
+          else:
+              short_sha = sha[:7]
+              safe_component = re.sub(r'[^a-zA-Z0-9-]', '-', component.lower())
+              fname = f"releases/{deploy_time}_{safe_component}_{short_sha}.md"
+          
+          # Export fname for later steps
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"fname={fname}\n")
+
+          # 3. Load Existing Data (If updating)
+          existing_content = ""
+          existing_frontmatter = {}
+          deployments = []
+          
+          if os.path.exists(fname):
+              print(f"Found existing release note for {issue_id}. Merging...")
+              with open(fname, 'r') as f:
+                  raw_content = f.read()
+                  
+              # Split YAML Frontmatter
+              if raw_content.startswith("---"):
+                  try:
+                      _, fm_text, body = raw_content.split("---", 2)
+                      existing_frontmatter = yaml.safe_load(fm_text)
+                      existing_content = body.strip()
+                      deployments = existing_frontmatter.get('deployments', [])
+                  except Exception as e:
+                      print(f"Error parsing existing frontmatter: {e}")
+          
+          # Add current deployment to list
+          current_deployment = {
+              'component': component,
+              'sha': sha,
+              'deploy_time': deploy_time,
+              'pr': pr,
+              'environment': environment
+          }
+          deployments.append(current_deployment)
+
+          # 4. Prepare Gemini Inputs
           final_summary = summary
           final_title = title
           category = "Update"
           user_facing = "true"
           
-          # Format date for display (YYYY-MM-DD)
-          display_date = deploy_time[:8]
-          display_date = f"{display_date[:4]}-{display_date[4:6]}-{display_date[6:]}"
-          
-          # AI Enhancement Logic
+          # Determine Prompt Type (Create vs Merge)
           if gemini_api_key and (pr_title or pr_body):
               try:
                   genai.configure(api_key=gemini_api_key)
                   model = genai.GenerativeModel('gemini-2.5-flash')
                   
-                  prompt = f"""
-                  You are an expert Product Marketing Manager for a high-trust Enterprise EHS (Environment, Health, and Safety)/Compliance software platform.
-                  Your audience is compliance officers and legal teams who rely on this platform for regulatory reporting.
-
-                  They trust the system implicitly.
-
-                  CORE PRINCIPLES
-                  - **Preserve Trust Above All:** Under no circumstances may you imply that any previous system behavior was wrong, inaccurate, broken, faulty, or unreliable. Frame all changes as enhancements or forward-looking improvements.
-                  - **Authoritative Tone:** Your voice is professional, reassuring, and authoritative.
-
-                  TASK
-                  Transform the provided technical inputs into a customer-facing release note.
-
-                  Inputs:
-                  - Component: {component}
-                  - Commit Message: {title}
-                  - Commit Details: {summary}
-                  - PR Title: {pr_title}
-                  - PR Description: {pr_body}
-
-                  OUTPUT FORMAT (STRICT — NO EXTRA TEXT)
-                  Title: <New Title>
-                  Category: <Feature | Improvement | Security | Internal>
-                  User Facing: <true | false>
-                  Summary: <Summary Text>
-
-                  DETAILED RULES
-                  1. Title Rules
-                  The title must be 5–8 words long.
-                  Must highlight the new capability or improved workflow.
-
-                  2. Category Rules
-                  Select exactly one:
-                  Feature → PR introduces a new capability, a new option, a new workflow, or a meaningful expansion of functionality.
-                  Improvement → PR enhances an existing capability, optimizes logic, expands precision, or clarifies workflow behavior.
-                  Security → PR concerns hardening, authentication, permissions, or data protection.
-                  Internal → Backend-only changes not visible to users.
-                  Do not use categories implying repair (e.g., “Fix”).
-
-                  3. User Facing Rules
-                  Return true if the change:
-                  modifies workflows users directly interact with
-                  updates a report, visible field, or UI element
-                  adds a new user option or visible behavior
-                  Return false for backend logic changes not visible to users.
-
-                  4. Summary & Tone Rules (STRICT)
-                  - **Length & Tone:**
-                    - For **Standard/Minor Updates**: Write 1–2 professional, authoritative, and reassuring sentences.
-                    - For **Major Features/Complex Updates**: You may expand up to 8 sentences to fully explain the new capability, workflow, or value unlocked.
-                  - **Framing Past Behavior:** Reference previous behavior only with neutral terms like “earlier logic,” “previous approach,” or “standard behavior at that time.”
-                  - **Forbidden Words:** You must not use any of the following or their synonyms: fix, bug, error, incorrect, wrong, inaccurate, accuracy, correction, failure, ensure correctness, issue, faulty, broken, miscalculated, problem.
-                  - **Preferred Framing:** Use positive, forward-looking verbs such as: Enhanced, Refined, Streamlined, Optimized, Updated, Standardized, Clarified, Expanded. Example framing: “Refined logic to better account for…”
-
-                  5. Abstraction & Specificity Rules
-                  - **No Code References:** Do NOT mention specific variable names (e.g., `constsum`, `chem_record`), function names, classes, file paths, or database columns.
-                  - **Conceptual Description:** Describe the *business logic* or *data concept* rather than the implementation.
-                    - *Bad:* "prioritizing the high value from constsum"
-                    - *Good:* "prioritizing the upper bound value for chemical composition"
-                    - *Bad:* "removed redundant multiplication by constituent_percentage"
-                    - *Good:* "streamlined the weight calculation logic to eliminate redundant processing"
-                  - **Be Specific but Functional:** You must explain *what logic changed* without revealing *how it was coded*. Focus on the *behavioral outcome* (e.g., "improves consistency in emissions reporting").
-                  """
+                  if existing_content:
+                      # MERGE PROMPT
+                      prompt = f"""
+                      You are an expert Product Marketing Manager for a high-trust EHS Compliance platform.
+                      
+                      TASK: Update an existing release note to include a new component deployment.
+                      The goal is to have a SINGLE cohesive story for the feature "{issue_id}", covering all affected components.
+                      
+                      EXISTING NOTE:
+                      {existing_content}
+                      
+                      NEW UPDATE ({component}):
+                      PR Title: {pr_title}
+                      PR Description: {pr_body}
+                      
+                      INSTRUCTIONS:
+                      1. Rewrite the Title and Summary to encompass both the old context and the new update.
+                      2. If the new update is just "backend support" for the existing UI feature (or vice versa), merge them into one seamless narrative.
+                      3. Maintain the "Zero-Panic" Tone (No "Fix", "Bug", "Error").
+                      4. Keep the Category/User Facing flags accurate for the *combined* feature.
+                      
+                      OUTPUT FORMAT (STRICT):
+                      Title: <Merged Title>
+                      Category: <Category>
+                      User Facing: <true/false>
+                      Summary: <Merged Summary>
+                      """
+                  else:
+                      # CREATE PROMPT (Standard)
+                      prompt = f"""
+                      You are an expert Product Marketing Manager for a high-trust Enterprise EHS Compliance platform.
+                      
+                      TASK: Transform technical inputs into a customer-facing release note.
+                      
+                      Inputs:
+                      - Component: {component}
+                      - PR Title: {pr_title}
+                      - PR Description: {pr_body}
+                      
+                      INSTRUCTIONS:
+                      1. Generate a concise, value-driven Title (5-8 words).
+                      2. Summarize the changes in 1-2 professional sentences (up to 8 for major features).
+                      3. **TONE:** Professional, Reassuring. NEVER imply past failures ("fix", "bug", "wrong" are forbidden). Use "Enhanced", "Refined", "Optimized".
+                      4. **Abstraction:** Do NOT mention file paths, class names, or specific variables. Describe the business logic/concept.
+                      
+                      OUTPUT FORMAT (STRICT):
+                      Title: <New Title>
+                      Category: <Feature | Improvement | Security | Internal>
+                      User Facing: <true | false>
+                      Summary: <Summary Text>
+                      """
                   
                   response = model.generate_content(prompt)
                   if response.text:
-                      # Simple parsing of the response
-                      lines = response.text.strip().split('\n')
+                      # Parse Response
+                      lines = response.text.strip().split('\\n')
+                      current_key = None
                       for line in lines:
                           if line.startswith("Title:"):
                               final_title = line.replace("Title:", "").strip()
@@ -228,46 +267,51 @@ jobs:
                               user_facing = line.replace("User Facing:", "").strip().lower()
                           elif line.startswith("Summary:"):
                               final_summary = line.replace("Summary:", "").strip()
-                          elif not line.startswith("Category:") and not line.startswith("User Facing:") and not line.startswith("Summary:") and not line.startswith("Title:"):
-                              # Append continuation lines to summary if they exist
-                              if final_summary == summary:
-                                  final_summary = line.strip()
-                              else:
-                                  final_summary += " " + line.strip()
-                                  
+                              current_key = "Summary"
+                          elif current_key == "Summary" and not any(line.startswith(k) for k in ["Title:", "Category:", "User Facing:"]):
+                              final_summary += " " + line.strip()
+                              
                       print("Gemini generated content successfully.")
               except Exception as e:
                   print(f"Gemini generation failed: {e}")
-                  # Fallback to original summary is already set
 
+          # 5. Write Content (Preserving/Updating Frontmatter)
+          
+          # Format Date for Display (Use most recent deployment time)
+          display_date = datetime.strptime(deploy_time[:8], "%Y%m%d").strftime("%b %d, %Y")
+
+          # Construct YAML Frontmatter manually to ensure order/cleanliness
+          # using pyyaml dump for the deployments list
+          deployments_yaml = yaml.dump(deployments, default_flow_style=False).strip()
+          
           content = dedent(
               f"""\
               ---
-              component: {component}
-              sha: {sha}
-              deploy_time: {deploy_time}
-              pr: {pr}
-              environment: {environment}
+              issue_id: {issue_id}
+              latest_deploy: {deploy_time}
               category: {category}
               user_facing: {user_facing}
+              deployments:
+              {dedent(deployments_yaml).replace('^', '  ')}
               ---
 
               # {final_title}
 
-              **Component:** {component}  
               **Date:** {display_date}  
-              **Environment:** {environment}
+              **Category:** {category}
 
               {final_summary}
 
               _More details or escalation info here as appropriate._
               """
           )
-
+          
+          # Write to file
+          os.makedirs("releases", exist_ok=True)
           with open(fname, "w", encoding="utf-8") as f:
               f.write(content)
               
-          print(f"Created release file: {fname}")
+          print(f"Created/Updated release file: {fname}")
           PY
 
           echo "fname=$fname" >> "$GITHUB_OUTPUT"
