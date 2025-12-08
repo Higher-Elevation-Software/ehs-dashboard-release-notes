@@ -331,6 +331,11 @@ jobs:
             echo "- **$formatted_date** — $icon **$category**: [$title_line]($f)" >> index.md
           done || true
 
+      - name: Build releases JSON
+        run: |
+          set -euo pipefail
+          python3 scripts/build_releases_json.py
+
       - name: Commit and push
         run: |
           set -euo pipefail
