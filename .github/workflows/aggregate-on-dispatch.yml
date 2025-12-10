@@ -176,11 +176,11 @@ jobs:
           
           # Export fname and metadata for later steps
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write(f"fname={fname}\\n")
+              f.write(f"fname={fname}\n")
               if issue_id:
-                  f.write(f"issue_id={issue_id}\\n")
+                  f.write(f"issue_id={issue_id}\n")
               if final_title:
-                  f.write(f"release_title={final_title}\\n")
+                  f.write(f"release_title={final_title}\n")
 
           # 3. Load Existing Data (If updating)
           existing_content = ""
