@@ -130,10 +130,15 @@ jobs:
           from datetime import datetime
 
           INSTRUCTIONS_TEXT = """
-          1. Generate a concise, value-driven Title (5-8 words).
-          2. Summarize the changes in 1-2 professional sentences (up to 8 for major features).
-          3. TONE: Professional, reassuring. Never imply past failures ("fix", "bug", "wrong" are forbidden). Prefer terms like "enhanced", "refined", and "optimized".
-          4. ABSTRACTION: Do NOT mention file paths, class names, helper methods, or variable names (for example: `chem_record`, `constsum`). Describe only the business behavior and customer value.
+          Audience: EHS administrators and compliance stakeholders reading a changelog, not a marketing campaign.
+
+          1. Write a short, factual Title (5–9 words) that describes what changed, not how it was implemented.
+          2. Summarize the change in at most 2–3 sentences and no more than about 70 words total.
+          3. Emphasize what users can now see or do (for example, new pages, metrics, or clearer reporting) and how it improves reliability, clarity, or workflow.
+          4. TONE: Neutral, professional, and calm. Do not use phrases like "we're excited", "powerful", "robust", "unparalleled", or similarly promotional language.
+          5. Do not mention past failures or defects. Avoid words like "fix", "bug", "wrong", "issue", or "broken".
+          6. ABSTRACTION: Do NOT mention file paths, classes, helper methods, or variable names (for example: `chem_record`, `constsum`). Describe only the visible behavior and business value.
+          7. It is acceptable to mention backend calculations or emissions logic at a high level (for example, "more consistent chemical amounts" or "clearer emissions totals"), but keep the description non-technical.
           """
 
           component = os.environ["component"]

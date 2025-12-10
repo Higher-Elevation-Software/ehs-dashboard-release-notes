@@ -250,11 +250,22 @@
       const [isExpanded, setIsExpanded] = useState(false);
       const dateLabel = useMemo(() => {
         if (!item.deploy_time) return '';
-        const yyyy = item.deploy_time.slice(0, 4);
-        const mm = item.deploy_time.slice(4, 6);
-        const dd = item.deploy_time.slice(6, 8);
-        return new Date(`${yyyy}-${mm}-${dd}`).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+        const yyyy = Number(item.deploy_time.slice(0, 4));
+        const mm = Number(item.deploy_time.slice(4, 6));
+        const dd = Number(item.deploy_time.slice(6, 8));
+        // Use year, monthIndex, day form to avoid timezone shifts from UTC parsing.
+        return new Date(yyyy, mm - 1, dd).toLocaleDateString('en-US', {
+          month: 'short',
+          day: '2-digit',
+          year: 'numeric',
+        });
       }, [item.deploy_time]);
+
+      const summaryText = useMemo(() => {
+        const raw = item.summary || 'No summary provided.';
+        // Strip simple markdown bold markers like **text** so they render cleanly.
+        return raw.replace(/\*\*(.*?)\*\*/g, '$1');
+      }, [item.summary]);
 
       return (
         <div className={`group bg-white border border-slate-200 rounded-xl transition-all duration-300 ease-in-out ${isExpanded ? 'shadow-lg ring-1 ring-slate-200' : 'shadow-sm hover:shadow-md hover:border-teal-200'}`}>
@@ -316,7 +327,7 @@
                     Summary of Changes
                   </h4>
                   <p className="text-slate-600 leading-relaxed text-sm sm:text-base mb-6">
-                    {item.summary || 'No summary provided.'}
+                    {summaryText}
                   </p>
 
                   <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200/60">
