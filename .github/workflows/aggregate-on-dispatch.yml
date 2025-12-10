@@ -408,8 +408,8 @@ jobs:
 
       - name: Commit and push (PR branch)
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || github.token }}
-        run: |
+          GITHUB_TOKEN: ${{ secrets.AGGREGATOR_TOKEN }}
+         run: |
           set -euo pipefail
 
           git config user.name "Release Bot"
