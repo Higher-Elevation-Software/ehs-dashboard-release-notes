@@ -289,12 +289,24 @@ jobs:
           display_date = datetime.strptime(deploy_time[:8], "%Y%m%d").strftime("%b %d, %Y")
 
           # Construct Full Frontmatter Dictionary
+          # Derive unique list of components from deployments, preserving order.
+          components = []
+          seen_components = set()
+          for d in deployments:
+              c = d.get('component')
+              if c and c not in seen_components:
+                  seen_components.add(c)
+                  components.append(c)
+
           frontmatter_data = {
               'issue_id': issue_id,
               'latest_deploy': deploy_time,
               'category': category,
               'user_facing': user_facing,
-              'deployments': deployments
+              # New fields to make component data explicit for consumers
+              'components': components,
+              'component': ", ".join(components) if components else 'unknown',
+              'deployments': deployments,
           }
           
           # Dump Frontmatter to string

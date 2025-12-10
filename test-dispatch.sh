@@ -29,19 +29,21 @@ curl -X POST \
   -H "Accept: application/vnd.github.v3+json" \
   -H "Authorization: token $(gh auth token)" \
   https://api.github.com/repos/Higher-Elevation-Software/ehs-dashboard-release-notes/dispatches \
-  -d "{
-    \"event_type\": \"release-note\",
-    \"client_payload\": {
-      \"component\": \"$COMPONENT\",
-      \"sha\": \"$SHA\",
-      \"title\": \"$TITLE\",
-      \"summary\": \"$SUMMARY\",
-      \"pr\": \"$PR\",
-      \"deploy_time\": \"$DEPLOY_TIME\",
-      \"environment\": \"$ENVIRONMENT\",
-      \"target_branch\": \"$TARGET_BRANCH\"
-    }
-  }"
+  -d @- <<EOF
+{
+  "event_type": "release-note",
+  "client_payload": {
+    "component": "${COMPONENT}",
+    "sha": "${SHA}",
+    "title": "${TITLE}",
+    "summary": "${SUMMARY}",
+    "pr": "${PR}",
+    "deploy_time": "${DEPLOY_TIME}",
+    "environment": "${ENVIRONMENT}",
+    "target_branch": "${TARGET_BRANCH}"
+  }
+}
+EOF
 
 echo
 echo "Dispatch sent! Check workflow runs:"

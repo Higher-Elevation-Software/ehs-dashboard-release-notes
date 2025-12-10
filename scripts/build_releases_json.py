@@ -83,7 +83,12 @@ def extract_summary(body_lines: List[str]) -> str:
             continue
         if stripped.startswith("# "):
             continue
-        if stripped.startswith("**Component:**") or stripped.startswith("**Date:**") or stripped.startswith("**Environment:**"):
+        if (
+            stripped.startswith("**Component:**")
+            or stripped.startswith("**Date:**")
+            or stripped.startswith("**Environment:**")
+            or stripped.startswith("**Category:**")
+        ):
             continue
         if stripped.startswith("_More details"):
             continue
@@ -128,9 +133,14 @@ def parse_release(path: Path, root: Path) -> Optional[Release]:
     raw_category = front_matter.get("category", "Update")
     norm_category = CATEGORY_MAP.get(raw_category.lower(), "Improvement")
 
+    # Prefer explicit `component` written by the workflow. For aggregated
+    # ISSUE_HES-* notes, the workflow also writes a `components` list, but we
+    # expose the combined string via `component` for backward compatibility.
+    component = front_matter.get("component", "").strip() or "unknown"
+
     return Release(
         path=path.relative_to(root),
-        component=front_matter.get("component", "unknown"),
+        component=component,
         sha=front_matter.get("sha", ""),
         deploy_time=front_matter.get("deploy_time", ""),
         environment=front_matter.get("environment", ""),
