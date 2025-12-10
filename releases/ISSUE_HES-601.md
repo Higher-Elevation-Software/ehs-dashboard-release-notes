@@ -1,6 +1,6 @@
 ---
 issue_id: HES-601
-latest_deploy: 20251210T064232Z
+latest_deploy: 20251210T070832Z
 category: Feature
 user_facing: 'true'
 components:
@@ -20,11 +20,11 @@ deployments:
   environment: production
 ---
 
-# Comprehensive ChemTrack Insights: Performance Monitoring & Enhanced Data Precision
+# ChemTrack Performance Monitoring and Data Precision
 
 **Date:** Dec 10, 2025  
 **Category:** Feature
 
-We're excited to introduce **ChemTrack Cache Performance Monitoring**, a robust new feature for administrators accessible within System Settings. This provides critical insights through intuitive summary cards, a detailed cache metrics table, and rollup statistics, powered by a new backend API for real-time, auto-refreshing data on cache lifecycle and performance. Complementing this, we've also implemented significant **refinements to our chemical amount calculation processes**, enhancing the consistency and precision of how chemical amounts are processed and formatted. These updates include an optimized approach to intelligently prioritize the most representative values and clarified emissions calculation logic, ensuring reported chemical amounts accurately reflect constituent weight for greater data reliability. Together, these advancements empower administrators with both detailed operational oversight and greater confidence in the foundational data accuracy of ChemTrack, ensuring optimal system operation and the highest level of data reliability for your EHS platform.
+Administrators can now access ChemTrack Cache Performance Monitoring within System Settings, providing critical insights through summary cards, a metrics table, and real-time statistics. Chemical amount calculations have also been refined for greater consistency and precision. The system now intelligently prioritizes representative values and clarifies emissions logic, ensuring reported amounts accurately reflect constituent weight for enhanced data reliability.
 
 _More details or escalation info here as appropriate._
