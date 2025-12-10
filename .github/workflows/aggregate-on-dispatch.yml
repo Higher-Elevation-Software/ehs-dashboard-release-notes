@@ -300,19 +300,16 @@ jobs:
           # Dump Frontmatter to string
           frontmatter_str = yaml.dump(frontmatter_data, default_flow_style=False, sort_keys=False).strip()
           
-          content = f"""---
-{frontmatter_str}
----
-
-# {final_title}
-
-**Date:** {display_date}  
-**Category:** {category}
-
-{final_summary}
-
-_More details or escalation info here as appropriate._
-"""
+          content = (
+              f"---\n"
+              f"{frontmatter_str}\n"
+              f"---\n\n"
+              f"# {final_title}\n\n"
+              f"**Date:** {display_date}  \n"
+              f"**Category:** {category}\n\n"
+              f"{final_summary}\n\n"
+              f"_More details or escalation info here as appropriate._\n"
+          )
           
           # Write to file
           os.makedirs("releases", exist_ok=True)
