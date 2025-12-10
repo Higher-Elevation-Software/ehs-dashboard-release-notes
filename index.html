@@ -68,6 +68,17 @@
     };
     const ALLOWED_CATEGORIES = ['Feature', 'Improvement', 'Security', 'Internal'];
 
+    // Helper: normalize the `component` field (which may be a comma-separated
+    // list like "dashboard-ui, dashboard-api") into an array of component
+    // identifiers.
+    const normalizeComponents = (componentField) => {
+      if (!componentField) return [];
+      return componentField
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
+    };
+
     const Badge = ({ type }) => {
       const meta = CATEGORY_META[type] || CATEGORY_META.Update;
       return (
@@ -265,9 +276,14 @@
 
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge type={item.display_category || item.category} />
-                  <span className="text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm inline-flex items-center gap-1">
-                    <Server className="w-3.5 h-3.5 text-slate-400" /> {item.component}
-                  </span>
+                  {normalizeComponents(item.component).map((comp) => (
+                    <span
+                      key={comp}
+                      className="text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm inline-flex items-center gap-1"
+                    >
+                      <Server className="w-3.5 h-3.5 text-slate-400" /> {comp}
+                    </span>
+                  ))}
                   <span className="text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm inline-flex items-center gap-1 uppercase tracking-wide">
                     <span className="relative flex h-2 w-2">
                       <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${item.environment === 'production' ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
@@ -361,7 +377,8 @@
       }, [search, category, selectedComponents]);
 
       const components = useMemo(() => {
-        const unique = Array.from(new Set(releases.map((r) => r.component).filter(Boolean)));
+        const allComponents = releases.flatMap((r) => normalizeComponents(r.component));
+        const unique = Array.from(new Set(allComponents));
         return unique.sort();
       }, [releases]);
 
@@ -373,7 +390,13 @@
           const matchesSearch = !query || (item.title?.toLowerCase().includes(query));
 
           const matchesCategory = category === 'All' || item.display_category === category;
-          const matchesComponent = selectedComponents.length === 0 || selectedComponents.includes(item.component);
+
+          // Components are OR-filtered: if any of the item's components match
+          // any selected component, we include the item.
+          const itemComponents = normalizeComponents(item.component);
+          const matchesComponent =
+            selectedComponents.length === 0 ||
+            itemComponents.some((c) => selectedComponents.includes(c));
 
           return matchesSearch && matchesCategory && matchesComponent;
         });

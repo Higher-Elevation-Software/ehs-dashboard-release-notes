@@ -129,6 +129,13 @@ jobs:
           from textwrap import dedent
           from datetime import datetime
 
+          INSTRUCTIONS_TEXT = """
+          1. Generate a concise, value-driven Title (5-8 words).
+          2. Summarize the changes in 1-2 professional sentences (up to 8 for major features).
+          3. TONE: Professional, reassuring. Never imply past failures ("fix", "bug", "wrong" are forbidden). Prefer terms like "enhanced", "refined", and "optimized".
+          4. ABSTRACTION: Do NOT mention file paths, class names, helper methods, or variable names (for example: `chem_record`, `constsum`). Describe only the business behavior and customer value.
+          """
+
           component = os.environ["component"]
           sha = os.environ["sha"]
           title = os.environ["title"]
@@ -228,10 +235,7 @@ jobs:
                       PR Description: {pr_body}
                       
                       INSTRUCTIONS:
-                      1. Rewrite the Title and Summary to encompass both the old context and the new update.
-                      2. If the new update is just "backend support" for the existing UI feature (or vice versa), merge them into one seamless narrative.
-                      3. Maintain the "Zero-Panic" Tone (No "Fix", "Bug", "Error").
-                      4. Keep the Category/User Facing flags accurate for the *combined* feature.
+                      {INSTRUCTIONS_TEXT}
                       
                       OUTPUT FORMAT (STRICT):
                       Title: <Merged Title>
@@ -252,10 +256,7 @@ jobs:
                       - PR Description: {pr_body}
                       
                       INSTRUCTIONS:
-                      1. Generate a concise, value-driven Title (5-8 words).
-                      2. Summarize the changes in 1-2 professional sentences (up to 8 for major features).
-                      3. **TONE:** Professional, Reassuring. NEVER imply past failures ("fix", "bug", "wrong" are forbidden). Use "Enhanced", "Refined", "Optimized".
-                      4. **Abstraction:** Do NOT mention file paths, class names, or specific variables. Describe the business logic/concept.
+                      {INSTRUCTIONS_TEXT}
                       
                       OUTPUT FORMAT (STRICT):
                       Title: <New Title>
