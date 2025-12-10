@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-12-10T09:54:53.541696Z",
+  "generated_at": "2025-12-10T10:05:52.846728Z",
   "items": [
     {
       "id": "ISSUE_HES-603",
@@ -33,8 +33,8 @@
     },
     {
       "id": "ISSUE_HES-601",
-      "title": "ChemTrack Performance Monitoring and Data Precision",
-      "summary": "Administrators can now access ChemTrack Cache Performance Monitoring within System Settings, providing critical insights through summary cards, a metrics table, and real-time statistics. Chemical amount calculations have also been refined for greater consistency and precision. The system now intelligently prioritizes representative values and clarifies emissions logic, ensuring reported amounts accurately reflect constituent weight for enhanced data reliability.",
+      "title": "ChemTrack Performance Monitoring and Enhanced Data Accuracy",
+      "summary": "Administrators can now access ChemTrack Cache Performance Monitoring within System Settings, providing critical insights through summary cards, a metrics table, and real-time statistics. To ensure enhanced data reliability, chemical amount calculations have been refined for greater consistency and precision. The system intelligently prioritizes the most representative chemical amount and streamlines emissions logic, ensuring reported totals accurately reflect constituent weight.",
       "component": "dashboard-ui, dashboard-api",
       "environment": "production",
       "category": "Feature",
