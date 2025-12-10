@@ -149,7 +149,7 @@ jobs:
           is_feature_mode = bool(issue_id)
           
           if is_feature_mode:
-              fname = f"releases/FEATURE_{issue_id}.md"
+              fname = f"releases/ISSUE_{issue_id}.md"
           else:
               short_sha = sha[:7]
               safe_component = re.sub(r'[^a-zA-Z0-9-]', '-', component.lower())
@@ -256,7 +256,7 @@ jobs:
                   response = model.generate_content(prompt)
                   if response.text:
                       # Parse Response
-                      lines = response.text.strip().split('\\n')
+                      lines = response.text.strip().split('\n')
                       current_key = None
                       for line in lines:
                           if line.startswith("Title:"):
