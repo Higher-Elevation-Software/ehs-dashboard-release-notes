@@ -1,6 +1,21 @@
 {
-  "generated_at": "2025-12-10T07:09:03.599284Z",
+  "generated_at": "2025-12-10T07:36:17.304455Z",
   "items": [
+    {
+      "id": "ISSUE_HES-602",
+      "title": "hes-602: Enhanced Threshold Config Experience",
+      "summary": "Improved the user experience for configuring thresholds and reviewing validation feedback for compliance limits.",
+      "component": "dashboard-ui",
+      "environment": "production",
+      "category": "Update",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "abc9991",
+      "short_sha": "abc9991",
+      "deploy_time": "20251210T073553Z",
+      "date": "2025-12-10",
+      "path": "releases/ISSUE_HES-602.md"
+    },
     {
       "id": "ISSUE_HES-601",
       "title": "ChemTrack Performance Monitoring and Data Precision",
