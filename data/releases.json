@@ -1,6 +1,21 @@
 {
-  "generated_at": "2025-12-10T07:36:17.304455Z",
+  "generated_at": "2025-12-10T09:54:53.541696Z",
   "items": [
+    {
+      "id": "ISSUE_HES-603",
+      "title": "hes-603: Streamlined Reporting Filters",
+      "summary": "Improved the reporting filters layout and defaults to make it easier to review compliance data across facilities.",
+      "component": "dashboard-ui",
+      "environment": "production",
+      "category": "Update",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "abc7771",
+      "short_sha": "abc7771",
+      "deploy_time": "20251210T095356Z",
+      "date": "2025-12-10",
+      "path": "releases/ISSUE_HES-603.md"
+    },
     {
       "id": "ISSUE_HES-602",
       "title": "hes-602: Enhanced Threshold Config Experience",
