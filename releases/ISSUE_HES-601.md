@@ -1,21 +1,21 @@
-  ---
-  issue_id: HES-601
-  latest_deploy: 20251210T034702Z
-  category: Improvement
-  user_facing: true
-  deployments:
-  - component: dashboard-api
-deploy_time: 20251210T034702Z
-environment: production
-pr: '97'
-sha: abc123d
-  ---
+---
+issue_id: HES-601
+latest_deploy: 20251210T050038Z
+category: Feature
+user_facing: 'true'
+deployments:
+- component: dashboard-ui
+  sha: def456
+  deploy_time: 20251210T050038Z
+  pr: '98'
+  environment: production
+---
 
-  # Refined Chemical and Emissions Data Accuracy
+# Empower Admins with ChemTrack Cache Performance Insights
 
-  **Date:** Dec 10, 2025  
-  **Category:** Improvement
+**Date:** Dec 10, 2025  
+**Category:** Feature
 
-  We've enhanced the precision of chemical amount calculations by refining how data points are selected, ensuring greater consistency and accuracy in your compliance workflows. Additionally, emissions calculations have been streamlined for a clearer, more accurate representation of constituent weights.
+A new ChemTrack Cache Monitoring feature is now available for administrators within System Settings, offering comprehensive insights into cache performance, rollup statistics, and lifecycle metrics to support optimal system operation.
 
-  _More details or escalation info here as appropriate._
+_More details or escalation info here as appropriate._

@@ -1,6 +1,21 @@
 {
-  "generated_at": "2025-12-10T04:56:44.154455Z",
+  "generated_at": "2025-12-10T05:01:07.003714Z",
   "items": [
+    {
+      "id": "ISSUE_HES-601",
+      "title": "Empower Admins with ChemTrack Cache Performance Insights",
+      "summary": "**Category:** Feature",
+      "component": "unknown",
+      "environment": "production",
+      "category": "Feature",
+      "display_category": "Feature",
+      "user_facing": true,
+      "sha": "def456",
+      "short_sha": "def456",
+      "deploy_time": "20251210T050038Z",
+      "date": "2025-12-10",
+      "path": "releases/ISSUE_HES-601.md"
+    },
     {
       "id": "20251208T144556Z_dashboard-api-_abc123d",
       "title": "Refined Chemical Amount Determination for Emissions Reporting",
