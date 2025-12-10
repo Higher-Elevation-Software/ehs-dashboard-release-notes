@@ -167,27 +167,35 @@ jobs:
           if os.path.exists(fname):
               print(f"Found existing release note for {issue_id}. Merging...")
               with open(fname, 'r') as f:
-                  raw_content = f.read()
+                  raw_content = f.read().strip()
                   
               # Split YAML Frontmatter
               if raw_content.startswith("---"):
                   try:
-                      _, fm_text, body = raw_content.split("---", 2)
-                      existing_frontmatter = yaml.safe_load(fm_text)
-                      existing_content = body.strip()
-                      deployments = existing_frontmatter.get('deployments', [])
+                      parts = raw_content.split("---", 2)
+                      if len(parts) >= 3:
+                          fm_text = parts[1]
+                          existing_frontmatter = yaml.safe_load(fm_text) or {}
+                          existing_content = parts[2].strip()
+                          deployments = existing_frontmatter.get('deployments', [])
+                          print(f"Loaded {len(deployments)} existing deployments.")
                   except Exception as e:
                       print(f"Error parsing existing frontmatter: {e}")
           
           # Add current deployment to list
-          current_deployment = {
-              'component': component,
-              'sha': sha,
-              'deploy_time': deploy_time,
-              'pr': pr,
-              'environment': environment
-          }
-          deployments.append(current_deployment)
+          # Check if this SHA already exists to prevent duplicates
+          if not any(d.get('sha') == sha and d.get('component') == component for d in deployments):
+              current_deployment = {
+                  'component': component,
+                  'sha': sha,
+                  'deploy_time': deploy_time,
+                  'pr': pr,
+                  'environment': environment
+              }
+              deployments.append(current_deployment)
+              print(f"Appended new deployment. Total: {len(deployments)}")
+          else:
+              print("Deployment with this SHA already exists in list.")
 
           # 4. Prepare Gemini Inputs
           final_summary = summary
