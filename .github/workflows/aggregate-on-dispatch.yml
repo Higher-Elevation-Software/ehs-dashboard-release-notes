@@ -172,11 +172,11 @@ jobs:
           
           # Export fname and metadata for later steps
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write(f"fname={fname}\n")
+              f.write(f"fname={fname}\\n")
               if issue_id:
-                  f.write(f"issue_id={issue_id}\n")
+                  f.write(f"issue_id={issue_id}\\n")
               if final_title:
-                  f.write(f"release_title={final_title}\n")
+                  f.write(f"release_title={final_title}\\n")
 
           # 3. Load Existing Data (If updating)
           existing_content = ""
@@ -433,23 +433,30 @@ jobs:
           # Create or update a pull request for this branch targeting the desired base branch.
           api_url="https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls"
           issue_id="${{ steps.parse.outputs.issue_id }}"
-          release_title="${{ steps.parse.outputs.release_title }}"
 
-          # Derive a human-friendly PR title and body.
+          # Choose the release id used in releases.json
           if [ -n "$issue_id" ]; then
-            pr_title="Release notes: $issue_id"
+            release_id="ISSUE_${issue_id}"
           else
-            pr_title="Release notes: ${note_slug}"
+            release_id="$note_slug"
           fi
 
-          if [ -n "$release_title" ]; then
-            pr_body="Automated release-note update for ${issue_id:-$note_slug}.\n\nTitle: ${release_title}"
-          else
-            pr_body="Automated release-note update for ${issue_id:-$note_slug}."
+          # Pull the title and summary from data/releases.json so the PR
+          # matches what will be shown in the UI card.
+          json_title=$(jq -r --arg id "$release_id" '.items[] | select(.id == $id) | .title // empty' data/releases.json)
+          json_summary=$(jq -r --arg id "$release_id" '.items[] | select(.id == $id) | .summary // empty' data/releases.json)
+
+          # Fallbacks if parsing fails for any reason.
+          if [ -z "$json_title" ]; then
+            json_title="Release notes: $release_id"
           fi
 
-          title="$pr_title"
-          body="$pr_body"
+          if [ -z "$json_summary" ]; then
+            json_summary="Automated release-note update for $release_id."
+          fi
+
+          title="$json_title"
+          body="$json_summary"
 
           payload=$(jq -n --arg head "$branch" --arg base "${{ steps.parse.outputs.target_branch }}" --arg title "$title" --arg body "$body" '{head:$head, base:$base, title:$title, body:$body}')
 
