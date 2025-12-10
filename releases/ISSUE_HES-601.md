@@ -1,6 +1,6 @@
 ---
 issue_id: HES-601
-latest_deploy: 20251210T050038Z
+latest_deploy: 20251210T054824Z
 category: Feature
 user_facing: 'true'
 deployments:
@@ -11,11 +11,11 @@ deployments:
   environment: production
 ---
 
-# Empower Admins with ChemTrack Cache Performance Insights
+# New: Comprehensive ChemTrack Cache Performance Monitoring for Admins
 
 **Date:** Dec 10, 2025  
 **Category:** Feature
 
-A new ChemTrack Cache Monitoring feature is now available for administrators within System Settings, offering comprehensive insights into cache performance, rollup statistics, and lifecycle metrics to support optimal system operation.
+We're excited to introduce a new **ChemTrack Cache Performance Monitoring** feature, designed to empower administrators with critical insights directly within System Settings. This dedicated new page offers a comprehensive view of cache performance through intuitive summary cards, a detailed cache metrics table, and insightful rollup statistics. Administrators can now easily monitor vital cache lifecycle and performance metrics, ensuring optimal system operation and proactive management.
 
 _More details or escalation info here as appropriate._

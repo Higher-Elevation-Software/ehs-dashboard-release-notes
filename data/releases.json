@@ -1,9 +1,9 @@
 {
-  "generated_at": "2025-12-10T05:01:07.003714Z",
+  "generated_at": "2025-12-10T05:48:50.825856Z",
   "items": [
     {
       "id": "ISSUE_HES-601",
-      "title": "Empower Admins with ChemTrack Cache Performance Insights",
+      "title": "New: Comprehensive ChemTrack Cache Performance Monitoring for Admins",
       "summary": "**Category:** Feature",
       "component": "unknown",
       "environment": "production",
