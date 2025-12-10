@@ -153,6 +153,10 @@ jobs:
           pr_body = os.environ.get("pr_body", "")
           gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
 
+          # Initialize final_title early so it is always defined,
+          # even if generation is skipped or fails.
+          final_title = ""
+
           # 1. Extract Issue ID (HES-XXX)
           issue_id = ""
           hes_match = re.search(r"(hes-\d+)", title + " " + pr_title + " " + pr_body, re.IGNORECASE)
