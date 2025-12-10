@@ -25,11 +25,17 @@ previews are not included.
 
 Each release note contains:
 
-- **Component** – which part of the system changed
-- **SHA** – the commit identifier for the deployed code
+- **Component(s)** – which part(s) of the system changed
+- **SHA(s)** – the commit identifier(s) for the deployed code
 - **Deployed** – UTC timestamp of the deployment
 - **Environment** – currently always `production` for public entries
+- **Category** – Feature, Improvement, Security, or Internal
 - **Summary** – a short description of the change
+
+**Note:** When multiple services deploy changes for the same feature
+(identified by a HES-XXX issue ID), they are automatically merged into a
+single release note showing all affected components and their respective
+commit SHAs.
 
 You can browse individual release files under the
 [`releases/`](./releases) directory, or use the
@@ -40,18 +46,18 @@ for a chronological view.
 
 ## How to read a release entry
 
-On the changelog site you will see entries like:
-
-> `20251204T185423Z_dashboard-webapp-_4481952.md — Send staging release notes to main branch; only environment varies`
-
-Clicking a link opens the full release note. Each note shows:
+On the changelog site, each release card shows:
 
 - A **title** describing the change
-- The affected **component**
-- The deployed **commit SHA**
-- The **deployment time** in UTC
-- The **environment** (production)
-- A short **summary** providing additional context
+- The affected **component(s)** (e.g., dashboard-api, dashboard-ui)
+- The **category badge** (Feature, Improvement, Security, or Internal)
+- The **environment** badge (production or staging)
+- The **deployment date**
+- Click to expand for a detailed **summary** and **commit SHA(s)**
+
+**Multi-component releases:** When a feature affects multiple services,
+you'll see multiple component badges and multiple SHA badges (labeled
+with their respective components) in the expanded view.
 
 If you need more information about a particular change (for example,
 which ticket, feature, or pull request it corresponds to), please
@@ -63,11 +69,16 @@ repository.
 ## Update frequency
 
 The changelog is updated automatically when a production deployment of
-any of the services above completes successfully. The site is typically
-refreshed within a minute of a deployment finishing.
+any of the services above completes successfully. The deployment triggers
+an automated workflow that:
 
-There is no manual curation step between deployment and publication;
-entries are generated directly from the deployment pipelines.
+1. Detects if the change is part of a tracked feature (HES-XXX issue)
+2. Generates or updates a release note with AI-enhanced messaging
+3. Creates a pull request for team review
+4. After PR approval, the site is refreshed within a minute
+
+This process ensures release notes are accurate and professionally
+written while maintaining automation.
 
 ---
 

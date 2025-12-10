@@ -18,17 +18,37 @@ Repository Dispatch Event (event_type: release-note)
     ↓
 Aggregator Workflow (.github/workflows/aggregate-on-dispatch.yml)
     ↓
-Creates releases/*.md file
+Detect HES-XXX issue ID (if present)
     ↓
-Regenerates index.md
+Fetch PR details via GitHub CLI
     ↓
-Commits & pushes to target branch (defaults to repo default branch, currently main)
+Generate/enhance title & summary via Gemini AI
+    ↓
+Create or update release file:
+  - ISSUE_HES-XXX.md (if issue ID detected)
+  - timestamp_component_sha.md (otherwise)
+    ↓
+Regenerate index.md and data/releases.json
+    ↓
+Create PR branch and push
+    ↓
+Create Pull Request with release details
+    ↓
+Human review & merge PR
     ↓
 GitHub Pages publishes
 ```
 
 The aggregator workflow is triggered by a GitHub `repository_dispatch`
 event with `event_type: release-note`.
+
+**Key features:**
+- **Issue-based merging:** Multiple deployments with the same HES-XXX ID
+  are merged into a single release note with multiple deployments listed.
+- **AI enhancement:** Gemini AI rewrites titles and summaries for clarity
+  and professionalism, following strict guidelines to avoid technical jargon.
+- **PR-based workflow:** Changes are proposed via PR for review before
+  publication.
 
 ---
 
@@ -83,23 +103,39 @@ unset and always write to `main`.
 
 For each valid dispatch, the aggregator:
 
-1. Creates a release file:
-   `releases/YYYYMMDDTHHMMSSZ_<component>_<short-sha>.md`.
-2. Writes a YAML front-matter block with `component`, `sha`,
-   `deploy_time`, `pr`, and `environment`.
-3. Adds a `# <title>` heading followed by details and the `summary`.
-4. Regenerates `index.md` with a list of all releases in reverse
-   chronological order.
-5. Commits the changes and pushes to the chosen target branch.
+### Single-component releases (no HES-XXX detected)
+1. Creates a release file: `releases/YYYYMMDDTHHMMSSZ_<component>_<short-sha>.md`
+2. Writes YAML frontmatter with `component`, `sha`, `deploy_time`, `pr`, `environment`, `category`, `user_facing`
+3. Uses Gemini AI to generate professional title and summary (if PR details available)
+4. Adds a `# <title>` heading followed by metadata and summary
 
-`index.md` entries are rendered as:
+### Multi-component releases (HES-XXX detected)
+1. Creates or updates: `releases/ISSUE_HES-XXX.md`
+2. Appends deployment to the `deployments` array in frontmatter:
+   ```yaml
+   deployments:
+   - component: dashboard-ui
+     sha: abc123
+     deploy_time: 20251210T050038Z
+     pr: '98'
+     environment: production
+   - component: dashboard-api
+     sha: def456
+     deploy_time: 20251210T061052Z
+     pr: '97'
+     environment: production
+   ```
+3. Uses Gemini AI to merge/update the title and summary to cover all components
+4. Updates `components` list and `component` string (comma-separated)
 
-```text
-<filename>.md — <first H1 heading from the file>
-```
+### Final steps (both types)
+5. Regenerates `index.md` with a list of all releases
+6. Runs `scripts/build_releases_json.py` to generate `data/releases.json`
+7. Creates a PR branch `release-notes/<slug>-<timestamp>` and pushes
+8. Creates a Pull Request with title/summary from `releases.json`
 
-So the **displayed title** in the changelog comes directly from the
-`title` field in `client_payload`.
+**Note:** The PR title and body match what will be displayed on the public
+changelog UI, making review straightforward.
 
 ---
 
@@ -189,17 +225,30 @@ When rotating the token, update both locations.
   - Inspect the run logs in GitHub Actions.
   - Verify required fields (`component`, `sha`, `title`) are present.
   - Check for git push errors (e.g., branch out of date).
+  - Verify `GEMINI_API_KEY` secret is set if AI generation is failing.
 
-- **Release doesnt appear on the public site**
-  - Confirm the workflow run completed successfully.
-  - Ensure the commit landed on `main`.
+- **PR not created**
+  - Check workflow logs for API errors.
+  - Verify `AGGREGATOR_TOKEN` has permission to create PRs.
+  - Look for existing PR with the same branch name.
+
+- **Release doesn't appear on the public site**
+  - Confirm the PR was merged to `main`.
   - Check the most recent GitHub Pages deployment for errors.
+  - Verify `data/releases.json` was updated correctly.
 
 ---
 
+## Workflow Secrets
+
+The workflow requires these secrets:
+
+- **`AGGREGATOR_TOKEN`** - Fine-grained PAT for repository write access
+- **`REPO_READER_TOKEN`** - Token for reading PR details from service repos
+- **`GEMINI_API_KEY`** - Google Gemini API key for AI title/summary generation
+
 ## Future enhancements (internal)
 
-- Optional staging-only branches for previewing release notes.
-- Additional metadata (e.g., linked issues, labels).
-- Slack / email notifications on production deploys.
-- Automatic cleanup / normalization of titles and summaries.
+- Automatic PR auto-merge for trusted deployments
+- Slack / email notifications on production deploys
+- Support for linking to Linear/Jira issues in UI

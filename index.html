@@ -105,13 +105,13 @@
               <img src="./EHS-Dashboard_logo_one_line.svg" alt="EHS-Dashboard Logo" className="h-6 w-auto" />
             </div>
             <div className="flex items-center space-x-6">
-              <a className="text-slate-300 hover:text-white text-sm font-medium transition-colors hidden sm:block" href="./README.md">Documentation</a>
-              <a className="text-slate-300 hover:text-white text-sm font-medium transition-colors hidden sm:block" href="mailto:support@higherelevationsoftware.com">Support</a>
+              <a className="text-slate-300 hover:text-white text-sm font-medium transition-colors hidden sm:block" href="https://48766036.hs-sites.com/en-us/ehs-dashboard-knowledge-base?__hstc=90551109.3236aaf6989d50e1ee6d5c1d9ffd9e8c.1753885269318.1765210643973.1765352205491.143&__hssc=90551109.2.1765352205491&__hsfp=1300199577">Documentation</a>
+              <a className="text-slate-300 hover:text-white text-sm font-medium transition-colors hidden sm:block" href="https://t1844.share.hsforms.com/2Cm0yUR_URLi0ZqNksPgHPg?__hstc=90551109.3236aaf6989d50e1ee6d5c1d9ffd9e8c.1753885269318.1765210643973.1765352205491.143&__hssc=90551109.2.1765352205491&__hsfp=1300199577">Support</a>
             </div>
           </div>
 
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700/50 text-teal-400 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-md shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 /50 border border-slate-700/50 text-teal-400 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-md shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
               Product Updates
             </div>
@@ -267,6 +267,15 @@
         return raw.replace(/\*\*(.*?)\*\*/g, '$1');
       }, [item.summary]);
 
+      // Get environment from deployments or fall back to item.environment
+      const environment = useMemo(() => {
+        if (item.deployments && item.deployments.length > 0) {
+          // Use first deployment's environment
+          return item.deployments[0].environment || 'production';
+        }
+        return item.environment || 'production';
+      }, [item.deployments, item.environment]);
+
       return (
         <div className={`group bg-white border border-slate-200 rounded-xl transition-all duration-300 ease-in-out ${isExpanded ? 'shadow-lg ring-1 ring-slate-200' : 'shadow-sm hover:shadow-md hover:border-teal-200'}`}>
           <div onClick={() => setIsExpanded(!isExpanded)} className="flex flex-col p-5 cursor-pointer select-none">
@@ -297,16 +306,11 @@
                   ))}
                   <span className="text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm inline-flex items-center gap-1 uppercase tracking-wide">
                     <span className="relative flex h-2 w-2">
-                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${item.environment === 'production' ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
-                      <span className={`relative inline-flex rounded-full h-2 w-2 ${item.environment === 'production' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${environment === 'production' ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
+                      <span className={`relative inline-flex rounded-full h-2 w-2 ${environment === 'production' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                     </span>
-                    {item.environment || 'env'}
+                    {environment}
                   </span>
-                  {!isExpanded && (
-                    <span className="text-sm text-slate-500 truncate hidden sm:inline-block max-w-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      Click to view details...
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -331,18 +335,22 @@
                   </p>
 
                   <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200/60">
-                    {item.sha && (
+                    {item.deployments && item.deployments.length > 0 ? (
+                      item.deployments.map((deployment, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1.5 rounded-md shadow-sm">
+                          <GitCommit className="w-3.5 h-3.5 text-slate-400" />
+                          <span className="font-mono text-slate-600">{deployment.sha?.substring(0, 7) || 'unknown'}</span>
+                          {item.deployments.length > 1 && deployment.component && (
+                            <span className="text-[10px] text-slate-400 ml-1">({deployment.component})</span>
+                          )}
+                        </div>
+                      ))
+                    ) : item.sha ? (
                       <div className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-white border border-slate-200 px-2.5 py-1.5 rounded-md shadow-sm">
                         <GitCommit className="w-3.5 h-3.5 text-slate-400" />
                         <span className="font-mono text-slate-600">{item.short_sha}</span>
                       </div>
-                    )}
-                    <a
-                      href={item.path}
-                      className="flex items-center gap-2 text-xs font-semibold text-teal-700 bg-white border border-teal-100 px-2.5 py-1.5 rounded-md shadow-sm hover:bg-teal-50"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" /> View full note
-                    </a>
+                    ) : null}
                   </div>
                 </div>
               </div>

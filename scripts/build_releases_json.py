@@ -42,6 +42,7 @@ class Release:
     user_facing: bool
     title: str
     summary: str
+    deployments: list
 
     @property
     def id(self) -> str:
@@ -62,13 +63,57 @@ class Release:
 
 
 def parse_front_matter(lines: Iterable[str]) -> dict:
+    """Parse YAML front matter including lists and nested structures."""
     data = {}
+    current_key = None
+    current_list = None
+    
     for line in lines:
-        if not line.strip() or line.strip().startswith("#"):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
             continue
-        if ":" in line:
+        
+        # Check for list item starting with "- "
+        if stripped.startswith("- "):
+            if current_list is not None:
+                # Parse list item
+                item_text = stripped[2:]  # Remove "- "
+                if ":" in item_text:
+                    # Start of a new dict in list
+                    current_list.append({})
+                    key, _, value = item_text.partition(":")
+                    current_list[-1][key.strip()] = value.strip()
+                else:
+                    # List of strings
+                    current_list.append(item_text)
+            continue
+        
+        # Check for continuation of list dict (indented property)
+        if line.startswith("  ") and not line.startswith("   ") and current_list is not None:
+            if ":" in stripped:
+                # This is a property of the current list item
+                if current_list and isinstance(current_list[-1], dict):
+                    key, _, value = stripped.partition(":")
+                    current_list[-1][key.strip()] = value.strip()
+            continue
+        
+        # Check for key-value pair at root level
+        if ":" in line and not line.startswith(" "):
             key, _, value = line.partition(":")
-            data[key.strip()] = value.strip()
+            key = key.strip()
+            value = value.strip()
+            
+            # Check if this might be a list (empty value or next line is a list)
+            if not value or value == "[]":
+                data[key] = []
+                current_key = key
+                current_list = data[key]
+            else:
+                # Simple key-value
+                data[key] = value
+                current_key = key
+                current_list = None
+    
     return data
 
 
@@ -127,6 +172,9 @@ def parse_release(path: Path, root: Path) -> Optional[Release]:
         if line.startswith("# "):
             title = line[2:].strip()
             break
+    
+    # Strip HES-XXX: prefix from title if present
+    title = re.sub(r'^hes-\d+:\s*', '', title, flags=re.IGNORECASE)
 
     summary = extract_summary(body_lines)
 
@@ -137,18 +185,33 @@ def parse_release(path: Path, root: Path) -> Optional[Release]:
     # ISSUE_HES-* notes, the workflow also writes a `components` list, but we
     # expose the combined string via `component` for backward compatibility.
     component = front_matter.get("component", "").strip() or "unknown"
+    
+    # Extract deployments array (for multi-component releases)
+    deployments = front_matter.get("deployments", [])
+    # If no deployments array, use latest_deploy from frontmatter or fallback to deploy_time
+    if not deployments:
+        # For single-deployment releases, use the frontmatter sha/deploy_time
+        latest_deploy = front_matter.get("latest_deploy") or front_matter.get("deploy_time", "")
+        sha = front_matter.get("sha", "")
+        if sha and latest_deploy:
+            deployments = [{
+                "component": component,
+                "sha": sha,
+                "deploy_time": latest_deploy
+            }]
 
     return Release(
         path=path.relative_to(root),
         component=component,
         sha=front_matter.get("sha", ""),
-        deploy_time=front_matter.get("deploy_time", ""),
+        deploy_time=front_matter.get("latest_deploy") or front_matter.get("deploy_time", ""),
         environment=front_matter.get("environment", ""),
         category=raw_category,
         display_category=norm_category,
         user_facing=str(front_matter.get("user_facing", "true")).lower() != "false",
         title=title or path.stem,
         summary=summary,
+        deployments=deployments,
     )
 
 
@@ -183,6 +246,7 @@ def to_payload(items: List[Release]) -> dict:
                 "deploy_time": r.deploy_time,
                 "date": r.date,
                 "path": str(r.path).replace("\\", "/"),
+                "deployments": r.deployments,
             }
             for r in items
         ],
