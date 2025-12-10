@@ -288,31 +288,31 @@ jobs:
           # Format Date for Display (Use most recent deployment time)
           display_date = datetime.strptime(deploy_time[:8], "%Y%m%d").strftime("%b %d, %Y")
 
-          # Construct YAML Frontmatter manually to ensure order/cleanliness
-          # using pyyaml dump for the deployments list
-          deployments_yaml = yaml.dump(deployments, default_flow_style=False).strip()
+          # Construct Full Frontmatter Dictionary
+          frontmatter_data = {
+              'issue_id': issue_id,
+              'latest_deploy': deploy_time,
+              'category': category,
+              'user_facing': user_facing,
+              'deployments': deployments
+          }
           
-          content = dedent(
-              f"""\
-              ---
-              issue_id: {issue_id}
-              latest_deploy: {deploy_time}
-              category: {category}
-              user_facing: {user_facing}
-              deployments:
-              {dedent(deployments_yaml).replace('^', '  ')}
-              ---
+          # Dump Frontmatter to string
+          frontmatter_str = yaml.dump(frontmatter_data, default_flow_style=False, sort_keys=False).strip()
+          
+          content = f"""---
+{frontmatter_str}
+---
 
-              # {final_title}
+# {final_title}
 
-              **Date:** {display_date}  
-              **Category:** {category}
+**Date:** {display_date}  
+**Category:** {category}
 
-              {final_summary}
+{final_summary}
 
-              _More details or escalation info here as appropriate._
-              """
-          )
+_More details or escalation info here as appropriate._
+"""
           
           # Write to file
           os.makedirs("releases", exist_ok=True)
