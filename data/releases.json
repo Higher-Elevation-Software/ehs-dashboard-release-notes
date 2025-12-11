@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-10T17:45:52.083249Z",
+  "generated_at": "2025-12-11T14:39:37.035928Z",
   "items": [
+    {
+      "id": "ISSUE_HES-607",
+      "title": "Automated and Faster Release Note Updates",
+      "summary": "We've automated the process for publishing release notes to our central changelog. This enhancement ensures that updates are delivered more quickly and consistently after each new release, providing you with timelier information on platform improvements.",
+      "component": "dashboard-ui",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20251211T143841Z",
+      "date": "2025-12-11",
+      "path": "releases/ISSUE_HES-607.md",
+      "deployments": [
+        {
+          "component": "dashboard-ui",
+          "sha": "204cc3948804f27802e5ae460e49890c97ef1ff2",
+          "deploy_time": "20251211T143841Z",
+          "pr": "'116'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "20251210T173900Z_changelog_launch",
       "title": "Public Changelog Now Available",
