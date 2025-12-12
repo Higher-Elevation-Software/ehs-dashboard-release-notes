@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-10T17:45:52.083249Z",
+  "generated_at": "2025-12-12T16:25:21.062151Z",
   "items": [
+    {
+      "id": "ISSUE_HES-631",
+      "title": "Full SDS Library Documents Now Displayed and Filterable",
+      "summary": "The SDS Library tab now displays all available SDS documents. Users can reliably view and filter their entire chemical safety data sheet collection, improving workflow efficiency and ensuring complete data visibility.",
+      "component": "dashboard-ui",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20251212T162451Z",
+      "date": "2025-12-12",
+      "path": "releases/ISSUE_HES-631.md",
+      "deployments": [
+        {
+          "component": "dashboard-ui",
+          "sha": "bfd14198805cbd1aaf3a41b06a0bae3a5d0a042f",
+          "deploy_time": "20251212T162451Z",
+          "pr": "'117'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "20251210T173900Z_changelog_launch",
       "title": "Public Changelog Now Available",
