@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-10T17:45:52.083249Z",
+  "generated_at": "2025-12-12T20:37:12.119369Z",
   "items": [
+    {
+      "id": "ISSUE_HES-631",
+      "title": "Improved Visibility of All Safety Data Sheets",
+      "summary": "Previously, some users could only view a limited number of their Safety Data Sheets (SDS) in certain lists. We have updated the system to ensure that all SDS documents are fully visible, providing a comprehensive view of your chemical library. This enhancement improves the completeness and reliability of your compliance information.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20251212T203643Z",
+      "date": "2025-12-12",
+      "path": "releases/ISSUE_HES-631.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "6ae045e76462c832280aef2086c64038adb27365",
+          "deploy_time": "20251212T203643Z",
+          "pr": "'102'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "20251210T173900Z_changelog_launch",
       "title": "Public Changelog Now Available",
