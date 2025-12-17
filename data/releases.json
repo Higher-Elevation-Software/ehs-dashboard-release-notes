@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-12T20:37:12.119369Z",
+  "generated_at": "2025-12-17T15:28:40.240892Z",
   "items": [
+    {
+      "id": "ISSUE_HES-622",
+      "title": "Dashboard now includes a dedicated support link",
+      "summary": "A dedicated support link has been added to the dashboard. This enhancement enables direct access to assistance and resources, streamlining the process for obtaining help and information.",
+      "component": "dashboard-ui",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20251217T152754Z",
+      "date": "2025-12-17",
+      "path": "releases/ISSUE_HES-622.md",
+      "deployments": [
+        {
+          "component": "dashboard-ui",
+          "sha": "6cf57c4b030d7d028fd6c9eb49659a86a0dfdf5d",
+          "deploy_time": "20251217T152754Z",
+          "pr": "'118'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-631",
       "title": "Improved Visibility of All Safety Data Sheets",
