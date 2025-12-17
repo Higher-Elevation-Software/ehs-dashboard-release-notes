@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-12T20:37:12.119369Z",
+  "generated_at": "2025-12-17T15:47:23.356378Z",
   "items": [
+    {
+      "id": "ISSUE_HES-622",
+      "title": "Merge pull request #639 from Higher-Elevation-Software/hes-622",
+      "summary": "hes-622",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Update",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20251217T154640Z",
+      "date": "2025-12-17",
+      "path": "releases/ISSUE_HES-622.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "954f2b32ac83ab71f7cf2a05f876566de8f223b4",
+          "deploy_time": "20251217T154640Z",
+          "pr": "'639'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-631",
       "title": "Improved Visibility of All Safety Data Sheets",
