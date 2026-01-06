@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-06T16:09:56.932219Z",
   "items": [
+    {
+      "id": "ISSUE_HES-634",
+      "title": "Clearer Display for Aliased Chemical Reference Information",
+      "summary": "The `aliased_to` field for chemical reference information now provides a more structured display. It consistently shows key details like `id`, `partno`, and `name`, improving clarity and ease of understanding for related chemical records.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260106T160926Z",
+      "date": "2026-01-06",
+      "path": "releases/ISSUE_HES-634.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "93a89594aa0bc8688e4f9c2101aad7fcaea71cd2",
+          "deploy_time": "20260106T160926Z",
+          "pr": "'645'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
