@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-06T15:59:47.030864Z",
   "items": [
+    {
+      "id": "ISSUE_HES-650",
+      "title": "Enhanced File Handling and Document Request Consistency",
+      "summary": "We've enhanced how the platform manages various file types and structures document-related requests. This update provides more reliable detection of file formats, clearer guidance for submitting different kinds of files, and ensures consistent processing for all document submissions, improving data integrity and operational workflow.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260106T155914Z",
+      "date": "2026-01-06",
+      "path": "releases/ISSUE_HES-650.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "c02bbbf51dfa1645320b58f55cf520682ede67d3",
+          "deploy_time": "20260106T155914Z",
+          "pr": "'105'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
