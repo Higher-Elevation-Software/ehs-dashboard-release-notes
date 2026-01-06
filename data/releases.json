@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-06T19:57:55.502760Z",
   "items": [
+    {
+      "id": "ISSUE_HES-624",
+      "title": "Usage Summary Tables Dynamically Display All Data",
+      "summary": "Tables within Usage Summary now dynamically adjust to display all available data fields. This ensures your compliance reports and summaries always reflect the most complete and up-to-date information, improving overall clarity and completeness.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260106T195725Z",
+      "date": "2026-01-06",
+      "path": "releases/ISSUE_HES-624.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "0a5988092a41916a29fc68f1ab35ad7675221414",
+          "deploy_time": "20260106T195725Z",
+          "pr": "'651'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
