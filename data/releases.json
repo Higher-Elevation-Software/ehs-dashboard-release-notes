@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-06T16:11:18.801351Z",
   "items": [
+    {
+      "id": "ISSUE_HES-646",
+      "title": "Footer Copyright Year Updates Automatically",
+      "summary": "The copyright year displayed in the platform's footer will now automatically update to reflect the current year. This enhancement ensures the legal notice remains consistently accurate and up-to-date.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260106T161051Z",
+      "date": "2026-01-06",
+      "path": "releases/ISSUE_HES-646.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "5e211dd586a18b7d986da5aa3913de602217accc",
+          "deploy_time": "20260106T161051Z",
+          "pr": "'647'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
