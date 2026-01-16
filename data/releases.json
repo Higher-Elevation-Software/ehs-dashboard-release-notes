@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-16T19:16:34.728221Z",
   "items": [
+    {
+      "id": "ISSUE_HES-329",
+      "title": "Enhanced Action Item and Calendar Management",
+      "summary": "We've enhanced backend support for action items, comments, and calendar-related resources. This includes new capabilities for listing, managing, and commenting on action items, alongside improved calendar event handling and analytics. These updates also bring greater flexibility for document associations and enhance overall system stability.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Feature",
+      "display_category": "Feature",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260116T191602Z",
+      "date": "2026-01-16",
+      "path": "releases/ISSUE_HES-329.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "0555583b06a7e3f1bb74089d75ccfc016d22f2b2",
+          "deploy_time": "20260116T191602Z",
+          "pr": "'106'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
