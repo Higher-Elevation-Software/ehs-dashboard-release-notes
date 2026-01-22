@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-22T19:30:47.571052Z",
   "items": [
+    {
+      "id": "20260122T193020Z_dashboard-api_266cf28",
+      "title": "Enhanced Security for Dashboard Information",
+      "summary": "This update strengthens the underlying security of the platform's dashboard, enhancing data integrity and protecting sensitive EHS information. It improves the reliability of how data is processed and displayed, contributing to a more secure and trustworthy compliance environment.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Security",
+      "display_category": "Security",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260122T193020Z",
+      "date": "2026-01-22",
+      "path": "releases/20260122T193020Z_dashboard-api_266cf28.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "266cf28398b97d3400523048743fb97ab3608c36",
+          "deploy_time": "20260122T193020Z",
+          "pr": "'104'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
