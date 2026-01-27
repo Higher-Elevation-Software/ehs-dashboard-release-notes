@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-27T20:43:09.739639Z",
   "items": [
+    {
+      "id": "20260127T204239Z_dashboard-webapp_d4de156",
+      "title": "Enhanced Security Fortifies EHS Compliance Platform Operations",
+      "summary": "We have implemented an essential security update to reinforce the integrity and availability of your EHS compliance data. These enhancements strengthen cryptographic processes, safeguarding against potential vulnerabilities and ensuring the platform's reliable operation.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Security",
+      "display_category": "Security",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260127T204239Z",
+      "date": "2026-01-27",
+      "path": "releases/20260127T204239Z_dashboard-webapp_d4de156.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "d4de156db1258df58f223da1deda9ea3fba8c674",
+          "deploy_time": "20260127T204239Z",
+          "pr": "'671'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
