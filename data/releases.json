@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-27T21:06:18.279462Z",
   "items": [
+    {
+      "id": "20260127T210549Z_dashboard-webapp_662a8c8",
+      "title": "Enhanced Dashboard Security and Performance",
+      "summary": "This update enhances the underlying security and stability of the EHS compliance dashboard. It includes internal improvements to protect against potential vulnerabilities, ensuring a more reliable and secure platform for managing your EHS data.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Security",
+      "display_category": "Security",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260127T210549Z",
+      "date": "2026-01-27",
+      "path": "releases/20260127T210549Z_dashboard-webapp_662a8c8.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "662a8c8e0ef61e18bbc90e53edd550a777a4f2c8",
+          "deploy_time": "20260127T210549Z",
+          "pr": "'668'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
