@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-27T20:43:41.813422Z",
   "items": [
+    {
+      "id": "20260127T204239Z_dashboard-webapp_0462237",
+      "title": "Enhanced Dashboard Security and Reliability",
+      "summary": "This update strengthens the underlying security of the EHS platform, enhancing data integrity and overall system stability. It helps protect against potential vulnerabilities, ensuring a more reliable and trustworthy experience for all users.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Security",
+      "display_category": "Security",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260127T204239Z",
+      "date": "2026-01-27",
+      "path": "releases/20260127T204239Z_dashboard-webapp_0462237.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "04622372fd7dcc0d6ef294faeb030610c8163549",
+          "deploy_time": "20260127T204239Z",
+          "pr": "'670'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
