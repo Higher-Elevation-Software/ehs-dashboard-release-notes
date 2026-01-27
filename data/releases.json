@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-27T17:06:36.640157Z",
   "items": [
+    {
+      "id": "ISSUE_HES-634",
+      "title": "Improved SDS Document Access and Chemical Reference Information",
+      "summary": "Accessing attached Safety Data Sheets (SDS) within chemical reference information is now more direct, with a dedicated URL provided for each document. This enhancement also streamlines how aliased part numbers are processed and displayed, improving overall data clarity and loading efficiency.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260127T170603Z",
+      "date": "2026-01-27",
+      "path": "releases/ISSUE_HES-634.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "183ad07fe25e8e688f7e44f2973debaae3deff67",
+          "deploy_time": "20260127T170603Z",
+          "pr": "'676'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
