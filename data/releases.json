@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-01-29T13:57:19.738973Z",
   "items": [
+    {
+      "id": "ISSUE_HES-665",
+      "title": "Improved OSHA 300 Reporting and Safety Configurations",
+      "summary": "OSHA 300 reporting now offers greater accuracy with refined incident categorization (e.g., timelost injury) and precise OSHA 300A summary statistics. Safety configuration management is more efficient, supporting new incident types in the UI and ensuring data consistency in Excel exports.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260129T135651Z",
+      "date": "2026-01-29",
+      "path": "releases/ISSUE_HES-665.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "1371f2c14e1a0c70b63268bbbfc5bc9089344bf3",
+          "deploy_time": "20260129T135651Z",
+          "pr": "'693'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
