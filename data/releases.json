@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-02-03T16:54:07.591486Z",
   "items": [
+    {
+      "id": "ISSUE_HES-690",
+      "title": "Bedford Employee Facility Assignments Now More Accurate",
+      "summary": "This update enhances the accuracy of facility assignments for employees and their monthly records associated with the Bedford site. It ensures all relevant employee data is consistently linked to the correct facility, providing clearer and more reliable compliance reporting.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260203T165334Z",
+      "date": "2026-02-03",
+      "path": "releases/ISSUE_HES-690.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "70778c75e7982a1187dd954444a66246271b805f",
+          "deploy_time": "20260203T165334Z",
+          "pr": "'110'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
