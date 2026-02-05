@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-02-05T19:30:10.223655Z",
   "items": [
+    {
+      "id": "20260205T192938Z_dashboard-webapp_73822d6",
+      "title": "Presentation Feature Retired; Enhanced Charting Performance",
+      "summary": "The legacy Presentation feature has been retired from the platform, streamlining navigation and available functionality. This update also includes a significant upgrade to our charting libraries, enhancing the performance and stability of all data visualizations across the application.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260205T192938Z",
+      "date": "2026-02-05",
+      "path": "releases/20260205T192938Z_dashboard-webapp_73822d6.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "73822d6bb1139b6b16c72cce16a6e53a6e3c1744",
+          "deploy_time": "20260205T192938Z",
+          "pr": "'702'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
