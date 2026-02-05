@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-02-05T14:03:23.718496Z",
   "items": [
+    {
+      "id": "20260205T140254Z_dashboard-api_1f024c4",
+      "title": "Improved Internal System Performance and Clarity",
+      "summary": "We have optimized internal system monitoring to improve resource utilization across non-production environments. These enhancements contribute to overall platform stability and support more consistent internal processes, ensuring continued reliable performance for your EHS compliance needs.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Internal",
+      "display_category": "Internal",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260205T140254Z",
+      "date": "2026-02-05",
+      "path": "releases/20260205T140254Z_dashboard-api_1f024c4.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "1f024c4275903519221d5d5d1b14c0d89a4e5901",
+          "deploy_time": "20260205T140254Z",
+          "pr": "'112'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
