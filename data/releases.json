@@ -1,6 +1,30 @@
 {
-  "generated_at": "2025-12-17T15:28:40.240892Z",
+  "generated_at": "2026-02-09T15:05:17.343351Z",
   "items": [
+    {
+      "id": "ISSUE_HES-710",
+      "title": "Enhanced Data Quality for Demo Report Maps",
+      "summary": "This update enhances the data quality and consistency of geo map charts within demo reports. It ensures that only valid geographic data points are displayed, improving the reliability and clarity of your map visualizations.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260209T150445Z",
+      "date": "2026-02-09",
+      "path": "releases/ISSUE_HES-710.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "153db7c04eb726cb8b8ad26dc82c65c98955aa33",
+          "deploy_time": "20260209T150445Z",
+          "pr": "'711'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-622",
       "title": "Dashboard now includes a dedicated support link",
