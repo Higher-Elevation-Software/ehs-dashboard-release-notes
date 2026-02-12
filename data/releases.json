@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-12T19:08:11.218753Z",
   "items": [
+    {
+      "id": "ISSUE_HES-715",
+      "title": "Enhanced User Management, Archiving, and Email Security",
+      "summary": "We've enhanced user account management with immediate access blocking for archived users and a clear, sequential process for archiving, restoring, and permanently deleting accounts. Email changes made by administrators now require user verification before access is restored, and the previous email owner will be notified for increased transparency. We've also strengthened admin permission controls for critical user actions, ensuring proper authorization.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Security",
+      "display_category": "Security",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260212T190733Z",
+      "date": "2026-02-12",
+      "path": "releases/ISSUE_HES-715.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "3bf412501d7323a8e7506a5459a1dcc2759f6730",
+          "deploy_time": "20260212T190733Z",
+          "pr": "'117'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
