@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-12T16:39:16.988913Z",
   "items": [
+    {
+      "id": "ISSUE_HES-699",
+      "title": "Improved Consistency for Metric Types",
+      "summary": "A minor update improves how metric types are identified and displayed within the platform. This ensures that standard metrics consistently show their correct type, providing clearer reporting and data interpretation for EHS administrators.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260212T163850Z",
+      "date": "2026-02-12",
+      "path": "releases/ISSUE_HES-699.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "1d407774d88289c0eea9638d04467d21b2a2b6de",
+          "deploy_time": "20260212T163850Z",
+          "pr": "'704'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
