@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-18T18:57:22.067957Z",
   "items": [
+    {
+      "id": "ISSUE_HES-652",
+      "title": "Enhanced Management of Trial and Demo Accounts",
+      "summary": "This release introduces a comprehensive system for managing trial and demo user accounts. It provides internal teams with automated provisioning of isolated sandbox environments, improved tracking of trial status, and enhanced tools for managing the conversion process. These updates support more efficient internal workflows and uphold production data integrity.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Feature",
+      "display_category": "Feature",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260218T185649Z",
+      "date": "2026-02-18",
+      "path": "releases/ISSUE_HES-652.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "6d7a7e952fad7e4595d53560e0e0a0bedecf48a2",
+          "deploy_time": "20260218T185649Z",
+          "pr": "'109'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
