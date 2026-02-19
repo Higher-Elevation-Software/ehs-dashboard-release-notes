@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-19T16:39:15.924012Z",
   "items": [
+    {
+      "id": "ISSUE_HES-722",
+      "title": "Improved Admin Health Report with Focused Summaries",
+      "summary": "The administrative health report has been streamlined to provide clearer, more focused summaries of user activity. The report now includes sorted lists of elevated administrators and those with recent updates, enhancing oversight. Detailed company and session information has been removed in favor of high-level counts, focusing on essential administrative data.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260219T163845Z",
+      "date": "2026-02-19",
+      "path": "releases/ISSUE_HES-722.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "eec3b2df7f8636ac01c80190a549eb95229b9e2f",
+          "deploy_time": "20260219T163845Z",
+          "pr": "'120'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
