@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-19T17:37:39.139063Z",
   "items": [
+    {
+      "id": "20260219T173656Z_dashboard-api_5571661",
+      "title": "Improved Dashboard Widget and Location Data Consistency",
+      "summary": "This release improves the stability of your existing dashboard widgets and map functionalities, ensuring seamless operation. It also enhances the consistency and accuracy of how country and state data is processed and displayed across the platform, providing more reliable geographical insights.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260219T173656Z",
+      "date": "2026-02-19",
+      "path": "releases/20260219T173656Z_dashboard-api_5571661.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "55716619bf97fff72cbc1767574c546212818456",
+          "deploy_time": "20260219T173656Z",
+          "pr": "'114'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
