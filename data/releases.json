@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-20T18:40:24.089872Z",
   "items": [
+    {
+      "id": "ISSUE_HES-720",
+      "title": "Accurate Evaluation of 'Not Applicable' in Forms",
+      "summary": "The platform now more accurately evaluates conditions within forms. This enhancement ensures that all input types, including 'Not Applicable' selections, are consistently processed according to their intended logic, providing more reliable form behavior and compliance workflows.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260220T183958Z",
+      "date": "2026-02-20",
+      "path": "releases/ISSUE_HES-720.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "222a06c5bae40db64b1274e91b3c351b7e7f9585",
+          "deploy_time": "20260220T183958Z",
+          "pr": "'725'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
