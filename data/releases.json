@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-24T16:42:29.005455Z",
   "items": [
+    {
+      "id": "ISSUE_HES-728",
+      "title": "Trial User Facility Management Actions Updated",
+      "summary": "For trial users, the \"Add New Facility\" button is now disabled, clearly indicating the need to upgrade for full access. Behind the scenes, we've optimized how facility types are loaded, enhancing the consistency and responsiveness of facility-related actions.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260224T164150Z",
+      "date": "2026-02-24",
+      "path": "releases/ISSUE_HES-728.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "bd74d2d07d57c9b14a2611d1092a09054ca0bb32",
+          "deploy_time": "20260224T164150Z",
+          "pr": "'730'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
