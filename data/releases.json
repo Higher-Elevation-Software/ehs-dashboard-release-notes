@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-02-25T21:57:53.378750Z",
   "items": [
+    {
+      "id": "ISSUE_HES-723",
+      "title": "External Form Security and Initialization Enhancements",
+      "summary": "External forms now benefit from enhanced security and more reliable initialization. Submissions are securely associated with your company and API key, ensuring correct data context. Improvements to form loading prevent issues when configurations are incomplete, providing a smoother user experience.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260225T215726Z",
+      "date": "2026-02-25",
+      "path": "releases/ISSUE_HES-723.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "3b46a70b0c1939526c62b2cc9b9ed59e2ada3363",
+          "deploy_time": "20260225T215726Z",
+          "pr": "'733'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
