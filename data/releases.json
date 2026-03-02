@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-02T20:26:45.507287Z",
   "items": [
+    {
+      "id": "20260302T202618Z_dashboard-api_d93f74e",
+      "title": "Enhanced Dashboard Stability and Security",
+      "summary": "We have updated core system components that power your EHS compliance dashboards. These enhancements improve overall dashboard stability, responsiveness, and security, providing a more reliable user experience.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260302T202618Z",
+      "date": "2026-03-02",
+      "path": "releases/20260302T202618Z_dashboard-api_d93f74e.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "d93f74e9700b57563489db405d2ac493f7deda0f",
+          "deploy_time": "20260302T202618Z",
+          "pr": "'121'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
