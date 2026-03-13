@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-13T14:06:40.026783Z",
   "items": [
+    {
+      "id": "20260313T140606Z_dashboard-webapp_2bf1f80",
+      "title": "Enhanced Dashboard Performance and Security",
+      "summary": "This update includes improvements to core dashboard components, enhancing overall platform performance and responsiveness. These updates strengthen the accuracy of internal data handling and bolster platform security, ensuring a more consistent and secure user experience.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260313T140606Z",
+      "date": "2026-03-13",
+      "path": "releases/20260313T140606Z_dashboard-webapp_2bf1f80.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "2bf1f808c158be046676690c0b8c8009ce4d016c",
+          "deploy_time": "20260313T140606Z",
+          "pr": "'739'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
