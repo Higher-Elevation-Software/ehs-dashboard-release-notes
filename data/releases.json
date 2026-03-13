@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-13T14:19:02.745407Z",
   "items": [
+    {
+      "id": "20260313T141829Z_dashboard-webapp_0092427",
+      "title": "Improved SVG Processing Reliability for Dashboard Visuals",
+      "summary": "This update improves the platform's reliability when processing SVG graphics for dashboard visuals. It prevents display inconsistencies that could occur with certain SVG data, ensuring a more consistent and stable viewing experience for all users.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260313T141829Z",
+      "date": "2026-03-13",
+      "path": "releases/20260313T141829Z_dashboard-webapp_0092427.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "009242727fb8ff1a05c6576cc082e251ebf3a587",
+          "deploy_time": "20260313T141829Z",
+          "pr": "'746'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
