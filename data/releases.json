@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-17T14:22:59.880895Z",
   "items": [
+    {
+      "id": "ISSUE_HES-695",
+      "title": "Enhanced Security for External System Access",
+      "summary": "We've strengthened the security and management of API keys, particularly for external link tokens. This enhancement enables better tracking of key expiration, revocation, and usage, ensuring more secure and reliable external data access for your compliance workflows.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Security",
+      "display_category": "Security",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260317T142227Z",
+      "date": "2026-03-17",
+      "path": "releases/ISSUE_HES-695.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "21d71111d081e7ccf7c321b74e23973f3008d424",
+          "deploy_time": "20260317T142227Z",
+          "pr": "'135'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
