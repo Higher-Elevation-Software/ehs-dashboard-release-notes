@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-17T14:35:45.825766Z",
   "items": [
+    {
+      "id": "ISSUE_HES-695",
+      "title": "Improved Security for External Action Item Links",
+      "summary": "External links to action items have been enhanced for improved security and reliability. All links, including those in email notifications, now utilize a robust, token-based system with strengthened expiration and validation. This ensures more secure and consistent access for external users managing compliance tasks.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Security",
+      "display_category": "Security",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260317T143515Z",
+      "date": "2026-03-17",
+      "path": "releases/ISSUE_HES-695.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "286bc8c5d2b25c34a2631898014a06793c9caebd",
+          "deploy_time": "20260317T143515Z",
+          "pr": "'740'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
