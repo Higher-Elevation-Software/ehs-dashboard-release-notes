@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-17T16:34:54.315292Z",
   "items": [
+    {
+      "id": "ISSUE_HES-695",
+      "title": "Consistent Facility Selection and Data Input Experience",
+      "summary": "We've enhanced how the platform manages facility selections. If a specific facility is unavailable or referenced incorrectly, the system will now automatically default to the first accessible facility, preventing errors and ensuring smoother navigation. This improvement also ensures data input forms consistently display relevant metric categories based on the active facility.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260317T163419Z",
+      "date": "2026-03-17",
+      "path": "releases/ISSUE_HES-695.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "4bd25396250d21ac4b1390393a6e2ca3206a81c6",
+          "deploy_time": "20260317T163419Z",
+          "pr": "'760'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
