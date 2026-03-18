@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-18T21:10:55.699749Z",
   "items": [
+    {
+      "id": "ISSUE_HES-763",
+      "title": "Enhanced Error Reporting and Data Sync Reliability",
+      "summary": "We've enhanced error reporting for automated daily data processes, providing clearer details in alert emails when issues occur. Additionally, the synchronization of utility statement data has been made more resilient, improving the reliability of data integrations by handling partial failures more effectively.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260318T211026Z",
+      "date": "2026-03-18",
+      "path": "releases/ISSUE_HES-763.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "c0e7ce616650281f99812a372ad6366eb8383f38",
+          "deploy_time": "20260318T211026Z",
+          "pr": "'148'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
