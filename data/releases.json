@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-23T19:46:43.184449Z",
   "items": [
+    {
+      "id": "ISSUE_HES-774",
+      "title": "Enhanced Consistency for Multi-line Text Fields",
+      "summary": "We've enhanced how plain text is processed in multi-line fields, such as descriptions or notes. This ensures all values are consistently stored and displayed as rich text, improving data reliability and the uniform presentation of your detailed content.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260323T194614Z",
+      "date": "2026-03-23",
+      "path": "releases/ISSUE_HES-774.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "4409e884a6a71d00e6ad8c58d3d8427c08a34e03",
+          "deploy_time": "20260323T194614Z",
+          "pr": "'775'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
