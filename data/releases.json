@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-24T15:05:03.867572Z",
   "items": [
+    {
+      "id": "ISSUE_HES-776",
+      "title": "Action Item Calculation Reliability Enhanced",
+      "summary": "Action item calculations are now more reliable and precise, particularly for date and datetime fields. Stricter validation for calculation variable names and enhanced logic handle various scenarios, ensuring consistent and accurate results. This provides greater confidence in automatically derived dates and times.",
+      "component": "dashboard-webapp",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260324T150433Z",
+      "date": "2026-03-24",
+      "path": "releases/ISSUE_HES-776.md",
+      "deployments": [
+        {
+          "component": "dashboard-webapp",
+          "sha": "cbe0c272a7c996d9dcd3fd79b3e07ab7fdc968ac",
+          "deploy_time": "20260324T150433Z",
+          "pr": "'777'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
