@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-25T18:10:01.651027Z",
   "items": [
+    {
+      "id": "ISSUE_HES-136",
+      "title": "Enhanced Export, Filtering, and ChemTrack Operations",
+      "summary": "Data management and reporting capabilities have been enhanced across the platform. Users can now export data from widgets, calendar events, ChemTrack inputs, and public SDS. Experience more consistent and reliable filtering and sorting for server-driven tables. Additionally, ChemTrack now supports grouping for inputs and allows for entry deletion, improving data organization and control.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Improvement",
+      "display_category": "Improvement",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260325T180921Z",
+      "date": "2026-03-25",
+      "path": "releases/ISSUE_HES-136.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "6fc20c080c52258e23e84da4f3b4fec9b23fcba3",
+          "deploy_time": "20260325T180921Z",
+          "pr": "'138'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
