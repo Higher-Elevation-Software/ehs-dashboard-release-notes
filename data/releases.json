@@ -1,6 +1,30 @@
 {
-  "generated_at": "2026-01-06T16:10:26.161284Z",
+  "generated_at": "2026-03-26T15:48:58.230283Z",
   "items": [
+    {
+      "id": "ISSUE_HES-139",
+      "title": "Bulk Hide Multiple Chemicals from Inventory",
+      "summary": "Users can now hide multiple chemical entries from their inventory simultaneously. This new bulk action streamlines the management of unused or historical chemicals, ensuring data integrity through all-or-nothing updates. The system provides clear feedback for any invalid entries during the process.",
+      "component": "dashboard-api",
+      "environment": "",
+      "category": "Feature",
+      "display_category": "Feature",
+      "user_facing": true,
+      "sha": "",
+      "short_sha": "",
+      "deploy_time": "20260326T154817Z",
+      "date": "2026-03-26",
+      "path": "releases/ISSUE_HES-139.md",
+      "deployments": [
+        {
+          "component": "dashboard-api",
+          "sha": "e6e7d783e74df269e8d2a9fd0e17f52804f6afe8",
+          "deploy_time": "20260326T154817Z",
+          "pr": "'151'",
+          "environment": "production"
+        }
+      ]
+    },
     {
       "id": "ISSUE_HES-643",
       "title": "Improved Consistency for Employee Import Template Export",
