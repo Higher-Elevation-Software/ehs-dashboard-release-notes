@@ -12,6 +12,7 @@ from __future__ import annotations
 import datetime as _dt
 import json
 import re
+import argparse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List, Optional
@@ -28,6 +29,13 @@ CATEGORY_MAP = {
     "update": "Improvement",
     "fix": "Improvement",
 }
+
+
+def _unquote(value: str) -> str:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
+    return value
 
 
 @dataclass
@@ -82,10 +90,10 @@ def parse_front_matter(lines: Iterable[str]) -> dict:
                     # Start of a new dict in list
                     current_list.append({})
                     key, _, value = item_text.partition(":")
-                    current_list[-1][key.strip()] = value.strip()
+                    current_list[-1][key.strip()] = _unquote(value)
                 else:
                     # List of strings
-                    current_list.append(item_text)
+                    current_list.append(_unquote(item_text))
             continue
         
         # Check for continuation of list dict (indented property)
@@ -94,7 +102,7 @@ def parse_front_matter(lines: Iterable[str]) -> dict:
                 # This is a property of the current list item
                 if current_list and isinstance(current_list[-1], dict):
                     key, _, value = stripped.partition(":")
-                    current_list[-1][key.strip()] = value.strip()
+                    current_list[-1][key.strip()] = _unquote(value)
             continue
         
         # Check for key-value pair at root level
@@ -110,7 +118,7 @@ def parse_front_matter(lines: Iterable[str]) -> dict:
                 current_list = data[key]
             else:
                 # Simple key-value
-                data[key] = value
+                data[key] = _unquote(value)
                 current_key = key
                 current_list = None
     
@@ -254,8 +262,18 @@ def to_payload(items: List[Release]) -> dict:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Build data/releases.json from releases/*.md")
+    parser.add_argument(
+        "--include-internal",
+        action="store_true",
+        help="Include user_facing:false notes in the generated JSON.",
+    )
+    args = parser.parse_args()
+
     root = Path(__file__).resolve().parent.parent
     items = load_releases(root)
+    if not args.include_internal:
+        items = [it for it in items if it.user_facing]
     payload = to_payload(items)
 
     out_dir = root / "data"
