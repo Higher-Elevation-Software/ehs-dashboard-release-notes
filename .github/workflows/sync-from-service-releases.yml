@@ -1,0 +1,85 @@
+name: Sync from service Releases
+
+# Phase 2 of the release-notes migration.
+# Pulls published GitHub Releases from each EHS Dashboard service repo and
+# writes them under releases-next/, then regenerates a parallel aggregate at
+# data/releases.next.json. The live releases/ + data/releases.json paths are
+# untouched in this phase, so the public site continues to be driven by the
+# legacy aggregator while we validate the new pipeline against it.
+#
+# Cut over to releases/ + data/releases.json in Phase 3.
+#
+# Triggers:
+# - schedule: every 15 minutes (cron uses repo default branch).
+# - workflow_dispatch: manual run from the Actions tab.
+# - repository_dispatch (release-published): optional webhook from a service
+#   to trigger a near-real-time refresh after a Release is published. Wiring
+#   from each service is Phase 5 polish; the trigger is declared here so it
+#   is available when needed without further workflow edits.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [release-published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-from-service-releases
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Sync release files from service repos
+        # Reuses REPO_READER_TOKEN, the same cross-repo read token the legacy
+        # aggregate-on-dispatch workflow uses for `gh pr view/list`. The script
+        # itself has no third-party dependencies.
+        env:
+          GH_TOKEN: ${{ secrets.REPO_READER_TOKEN }}
+        run: python3 scripts/sync_releases.py --output-dir releases-next
+
+      - name: Rebuild aggregate JSON (parallel path)
+        run: |
+          python3 scripts/build_releases_json.py \
+            --source-dir releases-next \
+            --output data/releases.next.json
+
+      - name: Commit and push if changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add releases-next data/releases.next.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Sync from service Releases [skip ci]"
+          # Rebase to absorb races with rebuild-aggregates-on-main and other
+          # pushes (e.g. the legacy aggregator). Retry a few times.
+          for i in 1 2 3; do
+            git pull --rebase origin main || true
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Failed to push aggregates after retries" >&2
+          exit 1

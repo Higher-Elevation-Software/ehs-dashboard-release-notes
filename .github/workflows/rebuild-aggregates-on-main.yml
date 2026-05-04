@@ -6,6 +6,10 @@ on:
     paths-ignore:
       - data/releases.json
       - index.md
+      # Phase 2 parallel pipeline writes here; legacy rebuild does not need
+      # to run for these and would be a no-op anyway. Cut over in Phase 3.
+      - releases-next/**
+      - data/releases.next.json
 
 permissions:
   contents: write

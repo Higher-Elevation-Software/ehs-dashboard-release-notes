@@ -223,9 +223,11 @@ def parse_release(path: Path, root: Path) -> Optional[Release]:
     )
 
 
-def load_releases(root: Path) -> List[Release]:
-    releases_dir = root / "releases"
+def load_releases(root: Path, source_dir: str = "releases") -> List[Release]:
+    releases_dir = root / source_dir
     items: List[Release] = []
+    if not releases_dir.exists():
+        return items
     for path in sorted(releases_dir.glob("*.md")):
         release = parse_release(path, root)
         if release:
@@ -262,25 +264,34 @@ def to_payload(items: List[Release]) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build data/releases.json from releases/*.md")
+    parser = argparse.ArgumentParser(description="Build a releases JSON aggregate from markdown release notes.")
     parser.add_argument(
         "--include-internal",
         action="store_true",
         help="Include user_facing:false notes in the generated JSON.",
     )
+    parser.add_argument(
+        "--source-dir",
+        default="releases",
+        help="Directory (relative to repo root) to read markdown release notes from. Default: releases.",
+    )
+    parser.add_argument(
+        "--output",
+        default="data/releases.json",
+        help="Path (relative to repo root) to write the aggregate JSON to. Default: data/releases.json.",
+    )
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parent.parent
-    items = load_releases(root)
+    items = load_releases(root, source_dir=args.source_dir)
     if not args.include_internal:
         items = [it for it in items if it.user_facing]
     payload = to_payload(items)
 
-    out_dir = root / "data"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_file = out_dir / "releases.json"
+    out_file = root / args.output
+    out_file.parent.mkdir(parents=True, exist_ok=True)
     out_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    print(f"Wrote {out_file} with {len(items)} releases")
+    print(f"Wrote {out_file} with {len(items)} releases (source: {args.source_dir})")
 
 
 if __name__ == "__main__":
